@@ -1,0 +1,18 @@
+indicators:
+    rx1day:
+        base: max_n_day_precipitation_amount
+        title: "Maximum 1-day total precipitation"
+    rx5day:
+        base: max_n_day_precipitation_amount
+        title: "Maximum 5-days total precipitation"
+        parameters:
+            window: 5
+    wetdays:
+        base: wetdays
+        parameters:
+            thresh: "10 mm/day"
+    cwd:
+        base: cwd
+        title: "Maximum length of extreme precipitation events"
+        parameters:
+            thresh: "10 mm/day"
