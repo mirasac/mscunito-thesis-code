@@ -12,6 +12,8 @@ import pint
 import xarray
 
 
+_MAX_LENGTH = 100
+
 class IntervalAbstract():
     """Base class to expose generic methods on intervals."""
     def __init__(self, left, right, name=None):
@@ -31,16 +33,41 @@ class IntervalNumeric(IntervalAbstract):
     def __str__(self):
         return f"[{self.left}, {self.right}]"
     
-    def to_numpy(self, num):
+    def to_numpy(self, **kwargs):
         return numpy.linspace(
             start=self.left,
             stop=self.right,
-            num=num,
-            endpoint=True
+            endpoint=True,
+            **kwargs
         )
     
-    def to_dataarray(self, num, **kwargs):
-        return xarray.DataArray(data=self.to_numpy(num), **kwargs)
+    def to_dataarray(self, **kwargs):
+        numpy_kwargs = {}
+        for kw in ("num",):
+            if kw in kwargs:
+                numpy_kwargs[kw] = kwargs.pop(kw)
+        return xarray.DataArray(data=self.to_numpy(**numpy_kwargs), **kwargs)
+
+class IntervalInteger(IntervalNumeric):
+    def __init__(self, left, right, name=None):
+        self.n = right - left + 1
+        super().__init__(left, right, name)
+    
+    def __str__(self):
+        if self.n == 2:
+            _return = f"{{{self.left}, {self.right}}}"
+        elif self.n <= _MAX_LENGTH:
+            inner = ", ".join(str(i) for i in range(self.left, self.right + 1))
+            _return = f"{{{inner}}}"
+        else:
+            _return = f"{{{self.left}, ..., {self.right}}}"
+        return _return
+    
+    def to_numpy(self, **kwargs):
+        return numpy.arange(
+            start=self.left,
+            stop=self.right + 1
+        )
 
 class IntervalQuantity(IntervalNumeric):
     """
@@ -73,8 +100,8 @@ class IntervalQuantity(IntervalNumeric):
         right = self._REGISTRY.Quantity(value=self.right, units=self.units)
         return f"[{left}, {right}]"
     
-    def to_dataarray(self, num, **kwargs):
-        da = super().to_dataarray(num, **kwargs)
+    def to_dataarray(self, **kwargs):
+        da = super().to_dataarray(**kwargs)
         da.attrs["units"] = str(self.units)
         return da
 
