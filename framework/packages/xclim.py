@@ -17,7 +17,7 @@ def get_variable_parameters(indicator) -> dict:
     Only some parameters can be varied, they are identified among the properties
     listed at https://github.com/Ouranosinc/xclim/blob/edf1e13b7d47e4ead94506cdbb3bce1f977376f9/xclim/core/utils.py#L523.
     """
-    return {f"{key}": p for key, p in indicator._all_parameters.items() if p.kind in _ALLOWED_KINDS}
+    return {f"{key}": p for key, p in indicator.parameters.items() if p.kind in _ALLOWED_KINDS}
 
 def compute_variations(indicator, variations, **indicator_kwargs) -> xarray.Dataset:
     """Apply compute function of `indicator` using the values in dictionary

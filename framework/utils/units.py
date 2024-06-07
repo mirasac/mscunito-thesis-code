@@ -12,7 +12,10 @@ def to_scalar_quantity(
         ureg = pint.UnitRegistry()
     _return = None
     if isinstance(source, xarray.DataArray):
-        _return = ureg.Quantity(source.data, source.attrs.get("units", ''))
+        if not "units" in source.attrs:
+            _return = source.data
+        else:
+            _return = ureg.Quantity(source.data, source.attrs["units"])
     return _return
 
 def units(
