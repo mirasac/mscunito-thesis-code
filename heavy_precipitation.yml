@@ -1,5 +1,5 @@
 indicators:
-    rx1day:
+    max_n_day_precipitation_amount:
         base: max_n_day_precipitation_amount
         title: "Maximum 1-day total precipitation"
     rx5day:
