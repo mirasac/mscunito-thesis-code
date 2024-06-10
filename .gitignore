@@ -1,5 +1,12 @@
-data/
 gitignore/
+
+data/*
+!data/era5-2km/
+data/era5-2km/*
+!data/era5-2km/risk/
+!data/era5-land/
+data/era5-land/*
+!data/era5-land/risk/
 
 # Python
 **/.venv/
