@@ -24,3 +24,5 @@ training_period = slice("1950-01-01", "1999-12-31")
 test_period = slice("2000-01-01", "2023-12-31")
 
 spatial_resolution = 0.25  # Units: degrees.
+
+models = ("EC-Earth3",)
