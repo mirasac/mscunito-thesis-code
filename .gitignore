@@ -1,5 +1,6 @@
 gitignore/
 
+data/**/reference_hourly.nc
 data/era5-2km/*
 !data/era5-2km/eof/
 !data/era5-2km/risk/
