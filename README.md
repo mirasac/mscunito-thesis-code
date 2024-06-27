@@ -16,3 +16,11 @@ The code in this repository is developed with Python 3.10.
 In this section some word choices appearing in the documents of this repository are presented, to clarify their meaning.
 
 - The term "dataset" is used with two slightly different meanings. An actual dataset, i.e. a set of climate data, which can be available in multiple formats and files, is referred to as *dataset*. An example is ERA5 dataset by ECMWF. The `xarray.Dataset` class is a Python class provided by package `xarray` and it can be mapped to a dataset. Both the class and its instances are refferred to as either *xarray Dataset* or `xarray.Dataset`.
+
+## Workflow
+
+Notebooks in the main directory show the steps for the analysis. They should be executed in the following order, forming a sort of pipeline:
+
+1. process raw data with `preprocessing.ipynb`;
+2. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
+3. evaluate indicators and their variations with `variations.ipynb`.

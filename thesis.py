@@ -26,3 +26,5 @@ test_period = slice("2000-01-01", "2014-12-31")
 spatial_resolution = 0.25  # Units: degrees.
 
 models = ("EC-Earth3",)
+
+drivers = ("heat_wave", "heavy_precipitation")

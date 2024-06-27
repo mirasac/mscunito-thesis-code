@@ -19,6 +19,24 @@ def get_variable_parameters(indicator) -> dict:
     """
     return {f"{key}": p for key, p in indicator.parameters.items() if p.kind in _ALLOWED_KINDS}
 
+def set_variable_parameters(parameters_dict: dict, intervals: dict):
+    """Add interval for parameters specified as keyword arguments,
+    if they are present in `indicator_dict`, which is updated in place.
+     
+    Parameter `indicator_dict` must have same structure of the returned
+    object of function `get_variable_parameters`.
+    """
+    for i in parameters_dict:
+        if i in intervals:
+            parameters_dict[i] = intervals[i]
+
+def print_variable_parameters(indicator):
+    print(indicator.identifier)
+    print(indicator.abstract)
+    d = get_variable_parameters(indicator)
+    for p in d:
+        print(f"- {p}: {d[p].description}")
+
 def compute_variations(indicator, variations, **indicator_kwargs) -> xarray.Dataset:
     """Apply compute function of `indicator` using the values in dictionary
     `variations` specified for each varied parameter.
