@@ -1,5 +1,36 @@
+import pathlib
+
 import matplotlib.pyplot as plt
 import xarray
+
+# Set up default directory for generated figures.
+_dir_document = pathlib.Path.home() / "mscunito-thesis-document"
+_dir_figures = _dir_document / "figures"
+if not _dir_document.exists():
+    _dir_figures = pathlib.Path.cwd() / "figures"
+_dir_figures.mkdir(parents=False, exist_ok=True)
+
+def savefig(fname, format=None, **kwargs):
+    """Similar to matplotlib.pyplot.savefig but with files stored
+    in the default directories for the thesis figures.
+    """
+    if fname is not None and len(plt.get_fignums()) > 0:
+        path = _dir_figures / fname
+        plt.savefig(path, format=format, **kwargs)
+        #plt.show()  # TODO probably this is needed outside Jupyter notebooks.
+
+def autosavefig(func):
+    def wrapper(*args, **kwargs):
+        # Manage default arguments for saving, by default do not save figure.
+        fname = kwargs.pop("fname", None)
+        format = kwargs.pop("format", None)
+        # Call plotting function.
+        _return = func(*args, **kwargs)
+        # Sometimes the returned object is not a Figure object but a wrapper,
+        # hence use the current figure, which should be always correct to save.
+        savefig(fname, format)
+        return _return
+    return wrapper
 
 def _coordinates_facet(xobject: xarray.Dataset | xarray.DataArray):
     # Assume coordinates are in ascending order, hence facet plot is created
@@ -8,6 +39,7 @@ def _coordinates_facet(xobject: xarray.Dataset | xarray.DataArray):
     # inverting order of latitude, cf. https://stackoverflow.com/a/72970086.
     return xobject.isel(latitude=slice(None, None, -1))
 
+@autosavefig
 def coordinates_facet(da, **kwargs):
     da = _coordinates_facet(da)
     row = kwargs.pop("row", "latitude")
@@ -17,6 +49,7 @@ def coordinates_facet(da, **kwargs):
         ax.grid(which="both")
     return _plot
 
+@autosavefig
 def yearly_mean_time_series_facet(da, resample_frequency="YS", window_size=5, **kwargs):
     da = da.resample(time=resample_frequency).mean()
     da = da.rolling(time=window_size).mean()
@@ -29,6 +62,7 @@ def yearly_mean_time_series_facet(da, resample_frequency="YS", window_size=5, **
                 label.set_visible(False)
     return _plot
 
+@autosavefig
 def scatter_facet(ds, x, y, **kwargs):
     ds = _coordinates_facet(ds)
     row = kwargs.pop("row", "latitude")
@@ -38,10 +72,12 @@ def scatter_facet(ds, x, y, **kwargs):
         ax.grid(which="both")
     return _plot
 
+@autosavefig
 def daily_anomaly(da_model, da_climatology):
     _plot = yearly_mean_time_series_facet(da_model.groupby("time.dayofyear") - da_climatology.sel(quantity="mean"))
     return _plot
 
+@autosavefig
 def data_vars_1d(ds, data_vars=None, label_attrs_key=None, **kwargs):
     if data_vars is None:
         data_vars = ds.data_vars
