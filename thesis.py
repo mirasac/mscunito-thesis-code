@@ -25,7 +25,7 @@ test_period = slice("2000-01-01", "2014-12-31")
 time_horizons = {
     "near": slice("2021-01-01", "2040-12-31"),
     "medium": slice("2051-01-01", "2070-12-31"),
-    "long": slice("2081-01-01", "2100-12-31"),
+    "long": slice("2081-01-01", "2100-12-31")
 }
 
 spatial_resolution = 0.25  # Units: degrees.

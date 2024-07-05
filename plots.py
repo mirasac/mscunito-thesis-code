@@ -3,6 +3,8 @@ import pathlib
 import matplotlib.pyplot as plt
 import xarray
 
+xarray.set_options(keep_attrs=True)
+
 # Set up default directory for generated figures.
 _dir_document = pathlib.Path.home() / "mscunito-thesis-document"
 _dir_figures = _dir_document / "figures"
@@ -15,8 +17,10 @@ def savefig(fname, format=None, **kwargs):
     in the default directories for the thesis figures.
     """
     if fname is not None and len(plt.get_fignums()) > 0:
+        # Default value.
+        bbox_inches = kwargs.pop("bbox_inches", "tight")
         path = _dir_figures / fname
-        plt.savefig(path, format=format, **kwargs)
+        plt.savefig(path, format=format, bbox_inches=bbox_inches, **kwargs)
         #plt.show()  # TODO probably this is needed outside Jupyter notebooks.
 
 def autosavefig(func):
@@ -28,7 +32,7 @@ def autosavefig(func):
         _return = func(*args, **kwargs)
         # Sometimes the returned object is not a Figure object but a wrapper,
         # hence use the current figure, which should be always correct to save.
-        savefig(fname, format)
+        savefig(fname, format, bbox_inches="tight")
         return _return
     return wrapper
 
@@ -73,8 +77,25 @@ def scatter_facet(ds, x, y, **kwargs):
     return _plot
 
 @autosavefig
-def daily_anomaly(da_model, da_climatology):
-    _plot = yearly_mean_time_series_facet(da_model.groupby("time.dayofyear") - da_climatology.sel(quantity="mean"))
+def daily_anomaly_facet(da_model, da_climatology, resample_frequency="YS", window_size=5, **kwargs):
+    _plot = yearly_mean_time_series_facet(
+        da_model.groupby("time.dayofyear") - da_climatology.sel(quantity="mean"),
+        resample_frequency=resample_frequency,
+        window_size=window_size,
+        **kwargs
+    )
+    return _plot
+
+@autosavefig
+def daily_anomaly(da_model, da_climatology, resample_frequency="YS", window_size=5, **kwargs):
+    da = da_model.groupby("time.dayofyear") - da_climatology.sel(quantity="mean")
+    da = da.resample(time=resample_frequency).mean()
+    da = da.rolling(time=window_size).mean()
+    _plot = plt.figure()
+    da.plot(**kwargs)
+    ax = _plot.axes[0]
+    ax.grid(which="both")
+    ax.set_ylabel(f"{ax.get_ylabel()} anomaly")
     return _plot
 
 @autosavefig
