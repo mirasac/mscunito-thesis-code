@@ -24,3 +24,7 @@ Notebooks in the main directory show the steps for the analysis. They should be 
 1. process raw data with `preprocessing.ipynb`;
 2. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
 3. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable in the notebook).
+
+## Color palette
+
+File `palette.json` stores the colors used in the thesis document.
