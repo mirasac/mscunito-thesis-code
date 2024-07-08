@@ -1,10 +1,12 @@
 gitignore/
 
-data/**/reference_hourly.nc
-data/**/indicators/*
-!data/**/indicators/time_series/
-!data/**/indicators/hazard/
-!data/**/indicators/ssp*.nc
+data/torino/
+data/ciampino/
+data/bologna/reference_hourly.nc
+data/bologna/indicators/*
+!data/bologna/indicators/time_series/
+!data/bologna/indicators/hazard/
+!data/bologna/indicators/ssp*.nc
 data/era5-2km/*
 !data/era5-2km/eof/
 !data/era5-2km/risk/
