@@ -1,13 +1,7 @@
 indicators:
     max_n_day_precipitation_amount:
         base: max_n_day_precipitation_amount
-    rx5day:
-        base: max_n_day_precipitation_amount
-        title: "Maximum 5-days total precipitation"
-        parameters:
-            window: 5
     wetdays:
         base: wetdays
     cwd:
         base: cwd
-        title: "Maximum length of extreme precipitation events"

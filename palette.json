@@ -1,0 +1,13 @@
+{
+  "exposure": "#01A8D2",
+  "hazard": "#183254",
+  "indicator": "#454545",
+  "risk": "#841D5D",
+  "response": "#C87B11",
+  "vulnerability": "#F7A800",
+  "driver": "#FF0000",
+  "ssp126": "#1F2E52",
+  "ssp245": "#E78928",
+  "ssp370": "#CB172F",
+  "ssp585": "#870A21"
+}

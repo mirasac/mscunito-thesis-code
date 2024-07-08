@@ -5,5 +5,3 @@ indicators:
         base: heat_wave_max_length
     heat_wave_total_length:
         base: heat_wave_total_length
-    tx_max:
-        base: tx_max

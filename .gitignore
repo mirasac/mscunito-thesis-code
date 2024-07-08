@@ -1,11 +1,13 @@
 gitignore/
 
-data/*
-!data/era5-2km/
+data/**/reference_hourly.nc
+data/**/indicators/*
+!data/**/indicators/time_series/
+!data/**/indicators/hazard/
+!data/**/indicators/ssp*.nc
 data/era5-2km/*
 !data/era5-2km/eof/
 !data/era5-2km/risk/
-!data/era5-land/
 data/era5-land/*
 !data/era5-land/eof/
 !data/era5-land/risk/
@@ -13,3 +15,4 @@ data/era5-land/*
 # Python
 **/.venv/
 **/__pycache__/
+dask_scheduler.json
