@@ -35,7 +35,7 @@ models = (
     #"GFDL-CM4",  # Missing variables or scenario.
     #"GFDL-CM4_gr2",  # Missing variables or scenario.
     "GFDL-ESM4",
-    "GISS-E2-1-G",
+    #"GISS-E2-1-G",  # Sub-daily values are present, almost all are NaNs.
     #"HadGEM3-GC31-LL",  # Missing variables or scenario.
     #"HadGEM3-GC31-MM",  # Missing variables or scenario.
     #"IITM-ESM",
