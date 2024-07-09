@@ -23,37 +23,39 @@ models = (
     "ACCESS-ESM1-5",
     "BCC-CSM2-MR",
     "CanESM5",
-    #"CESM2",
-    #"CESM2-WACCM",
-    #"CMCC-CM2-SR5",
+    #"CESM2",  # Missing variables or scenario.
+    #"CESM2-WACCM",  # Missing variables or scenario.
+    #"CMCC-CM2-SR5",  # Missing variables or scenario.
     "CMCC-ESM2",
     "CNRM-CM6-1",
     "CNRM-ESM2-1",
     "EC-Earth3",
     "EC-Earth3-Veg-LR",
     "FGOALS-g3",
-    #"GFDL-CM4",
-    #"GFDL-CM4_gr2",
+    #"GFDL-CM4",  # Missing variables or scenario.
+    #"GFDL-CM4_gr2",  # Missing variables or scenario.
     "GFDL-ESM4",
     "GISS-E2-1-G",
-    #"HadGEM3-GC31-LL",
-    #"HadGEM3-GC31-MM",
+    #"HadGEM3-GC31-LL",  # Missing variables or scenario.
+    #"HadGEM3-GC31-MM",  # Missing variables or scenario.
     #"IITM-ESM",
     "INM-CM4-8",
     "INM-CM5-0",
     "IPSL-CM6A-LR",
-    "KACE-1-0-G",
-    #"KIOST-ESM",
+    #"KACE-1-0-G",  # Calendar of 360 days.
+    #"KIOST-ESM",  # Missing variables or scenario.
     "MIROC-ES2L",
     "MIROC6",
     "MPI-ESM1-2-HR",
     "MPI-ESM1-2-LR",
     "MRI-ESM2-0",
-    #"NESM3",
+    #"NESM3",  # Missing variables or scenario.
     "NorESM2-LM",
     "NorESM2-MM",
     "TaiESM1",
-    "UKESM1-0-LL"
+    #"UKESM1-0-LL"  # Calendar of 360 days.
 )
 
 drivers = ("heat_wave", "heavy_precipitation")
+
+calendar = "noleap"  # For a list of available calendars check http://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#calendar.
