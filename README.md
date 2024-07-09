@@ -22,9 +22,10 @@ In this section some word choices appearing in the documents of this repository 
 Notebooks in the main directory show the steps for the analysis. They should be executed in the following order, forming a sort of pipeline:
 
 1. process raw data with `preprocessing.ipynb`;
-2. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
-3. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable in the notebook).
+2. prepare climatology data by launching `climatology.ipynb`;
+3. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
+4. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable in the notebook).
 
 ## Color palette
 
-File `palette.json` stores the colors used in the thesis document.
+File `palette.json` stores colors used in the thesis document and in some plots.
