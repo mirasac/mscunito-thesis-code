@@ -8,13 +8,16 @@ coords = {
 scenario = ("ssp126", "ssp245", "ssp370", "ssp585")
 
 baseline_period = slice("1994-01-01", "2023-12-31")
-training_period = slice("1950-01-01", "1999-12-31")
-test_period = slice("2000-01-01", "2014-12-31")
+training_period = slice("1950-01-01", "1993-12-31")
+test_period = baseline_period
 time_horizons = {
     "near": slice("2021-01-01", "2040-12-31"),
     "medium": slice("2051-01-01", "2070-12-31"),
     "long": slice("2081-01-01", "2100-12-31")
 }
+
+extension_scenario = "ssp245"
+extension_period = slice("2015-01-01", baseline_period.stop)
 
 spatial_resolution = 0.25  # Units: degrees.
 
