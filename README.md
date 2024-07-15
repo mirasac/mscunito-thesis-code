@@ -21,10 +21,11 @@ In this section some word choices appearing in the documents of this repository 
 
 Notebooks in the main directory show the steps for the analysis. They should be executed in the following order, forming a sort of pipeline:
 
-1. process raw data with `preprocessing.ipynb`;
-2. prepare climatology data by launching `climatology.ipynb`;
-3. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
-4. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable in the notebook).
+1. normalise raw data to common format and coordinates with `preprocessing.ipynb`;
+2. apply temperature correction to NEX-GDDP-CMIP6 data with `fix_tas_extremes.ipynb`;
+3. prepare climatology data by launching `climatology.ipynb`;
+4. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
+5. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable inside the notebook).
 
 ## Color palette
 
