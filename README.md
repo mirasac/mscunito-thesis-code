@@ -2,10 +2,17 @@
 
 Sources for thesis code.
 
+Source code include a Python package with utilities for the analysis performed in the thesis.
+The working name of the package is `braun`. It is short and not present in PyPI, just for convenience.
+
 ## Versioning
 
 [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html) is used to tag commits and releases.
 Commit messages follow [Convential Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+
+The version number is stored in file `VERSION` to be used programmatically.
+
+From version 1.0.0 the working name is changed into the official name of the package.
 
 ## Environment
 
