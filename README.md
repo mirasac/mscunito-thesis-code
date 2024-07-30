@@ -18,6 +18,14 @@ From version 1.0.0 the working name is changed into the official name of the pac
 
 The code in this repository is developed with Python 3.10.
 
+The package must be installed before using the code in the repository. To install from source (i.e. code in `src` directory), launch the following command in the root directory of the repository (or in general where the file `pyproject.toml` is):
+
+```
+pip install .
+```
+
+To install the package while allowing changes to its Python code, add flag `--editable` to the previous command (cf. [setuptools guide](https://setuptools.pypa.io/en/latest/userguide/development_mode.html)).
+
 ## Naming convention
 
 In this section some word choices appearing in the documents of this repository are presented, to clarify their meaning.
