@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "braun"
+authors = [{name = "Marco Casari", email = "marco.casari@edu.unito.it"}]
+description = "Package containing utilities for the MSc thesis."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+classifiers = [
+    "Private :: Do Not Upload",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent"
+]
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/mirasac/mscunito-thesis-code"
+"Repository" = "https://github.com/mirasac/mscunito-thesis-code.git"
+"Issues" = "https://github.com/mirasac/mscunito-thesis-code/issues"
+
+[tool.setuptools.dynamic]
+version = {file = ["VERSION"]}
+readme = {file = ["requirements.txt"], content-type = "text/markdown"}
