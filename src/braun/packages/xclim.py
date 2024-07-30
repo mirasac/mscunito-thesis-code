@@ -4,8 +4,8 @@ import numpy
 import xarray
 import xclim
 
-from framework.utils.generic import product
-from framework.utils.units import to_scalar_quantity
+from braun.utils.generic import product
+from braun.utils.units import to_scalar_quantity
 
 _ALLOWED_KINDS = [
     xclim.core.utils.InputKind.QUANTIFIED,

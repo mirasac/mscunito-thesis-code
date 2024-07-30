@@ -18,3 +18,4 @@ data/era5-land/*
 **/.venv/
 **/__pycache__/
 dask_scheduler.json
+**.egg-info/
