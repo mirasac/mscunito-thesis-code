@@ -24,7 +24,7 @@ The package must be installed before using the code in the repository. To instal
 pip install .
 ```
 
-To install the package while allowing changes to its Python code, add flag `--editable` to the previous command (cf. [setuptools guide](https://setuptools.pypa.io/en/latest/userguide/development_mode.html)).
+To install the package while allowing changes to its Python code, add flag `--editable` to the previous command (cf. [official guide](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#working-in-development-mode)).
 
 ## Naming convention
 
