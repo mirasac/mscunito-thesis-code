@@ -1,0 +1,10 @@
+driver,indicator,value,units,notes
+Soil sealing,area,1330000,m2,
+Passengers,number,5879496,,number in 2019
+Buildings in bad conditions,number,NA,,number
+Age buildings,number,105,,
+Air traffic,number,52253,,movements in 2019
+Parking accesses,number,NA,,number in 2019
+Staff work outside the airport,number,NA,,number
+Underground infrastructures,area,14700,m2,
+Flooded areas,fractionarea,NA,%,
