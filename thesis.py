@@ -5,19 +5,23 @@ coords = {
     "ciampino": (41.799, 12.594)
 }
 
-scenario = ("ssp126", "ssp245", "ssp370", "ssp585")
+scenario = ("ssp126", "ssp245", "ssp370")
 
-baseline_period = slice("1994-01-01", "2023-12-31")
-training_period = slice("1950-01-01", "1993-12-31")
-test_period = baseline_period
+reference_periods = {
+    "torino": slice("1971-01-01", "2000-12-31"),
+    "ciampino": slice("1981-01-01", "2010-12-31")
+}
 time_horizons = {
     "near": slice("2021-01-01", "2040-12-31"),
     "medium": slice("2051-01-01", "2070-12-31"),
     "long": slice("2081-01-01", "2100-12-31")
 }
 
+training_period = slice("1950-01-01", "1993-12-31")
+test_period = slice("1994-01-01", "2023-12-31")
+
 extension_scenario = "ssp245"
-extension_period = slice("2015-01-01", baseline_period.stop)
+extension_period = slice("2015-01-01", "2023-12-31")
 
 spatial_resolution = 0.25  # Units: degrees.
 
@@ -41,7 +45,7 @@ models = (
     #"GISS-E2-1-G",  # Sub-daily values are present, almost all are NaNs.
     #"HadGEM3-GC31-LL",  # Missing variables or scenario.
     #"HadGEM3-GC31-MM",  # Missing variables or scenario.
-    #"IITM-ESM",
+    #"IITM-ESM",  # Missing variables or scenario.
     "INM-CM4-8",
     "INM-CM5-0",
     "IPSL-CM6A-LR",
