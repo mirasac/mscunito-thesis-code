@@ -1,8 +1,12 @@
 driver,indicator,value,units,notes
-Vegetated area in the airports,NA,NA,NA,
-Risk awareness,number,5879496,NA,
-Buildings in bad conditions,number,NA,,number
-Age buildings,number,105,,
-Air traffic,number,52253,,movements in 2019
-Parking accesses,number,NA,,number in 2019
-Staff work outside the airport,number,NA,,number
+Vegetated area in the airport,?,NA,NA,
+Risk awareness,?,?,NA,Transition 4+; ISO 50001 (energy saving)
+Green roof,?,?,?,Not present
+Green wall,?,?,?,Not present
+Heat resistant coating,?,?,?,Not present
+Insurance policy for extreme events,?,?,?,Not present
+Guidelines for adaptation plan to climate change,?,?,?,Regional adaptation plan being processed
+Evening departures,?,NA,?,
+Efficient drainage system,?,?,?,Present
+Monitoring and alarm system,?,?,?,Not present
+Bioinfiltration and permeable pavements,?,?,?,Not present
