@@ -1,12 +1,12 @@
 driver,indicator,value,units,notes
-Vegetated area in the airport,?,NA,NA,
-Risk awareness,?,?,NA,Transition 4+; ISO 50001 (energy saving)
-Green roof,?,?,?,Not present
-Green wall,?,?,?,Not present
-Heat resistant coating,?,?,?,Not present
-Insurance policy for extreme events,?,?,?,Not present
-Guidelines for adaptation plan to climate change,?,?,?,Regional adaptation plan being processed
-Evening departures,?,NA,?,
-Efficient drainage system,?,?,?,Present
-Monitoring and alarm system,?,?,?,Not present
-Bioinfiltration and permeable pavements,?,?,?,Not present
+Vegetated area in the airport,presence,NA,NA,
+Risk awareness,level,0.1,NA,Transition 4+; ISO 50001 (energy saving)
+Green roof,presence,0.9,,Not present
+Green wall,presence,0.9,,Not present
+Heat resistant coating,presence,0.9,,Not present
+Insurance policy for extreme events,presence,0.9,,Not present
+Guidelines for adaptation plan to climate change,presence,0.5,,Regional adaptation plan being processed
+Evening departures,number,NA,,
+Efficient drainage system,presence,0.1,,Present
+Monitoring and alarm system,presence,0.9,,Not present
+Bioinfiltration and permeable pavements,presence,0.9,,Not present
