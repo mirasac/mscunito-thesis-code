@@ -42,6 +42,8 @@ Notebooks in the main directory show the steps for the analysis. They should be 
 4. apply bias adjustment to preprocessed data with `bias_adjustment.ipynb`;
 5. evaluate indicators and their variations with `variations.ipynb`, run this notebook for each scenario (must be selected in the specific variable inside the notebook).
 
+Note that steps following step 3 do not depend on it: climatology is needed to evaluate normals and anomalies of climate variables, but analyses on indicators are performed on model data.
+
 ## Color palette
 
 File `palette.json` stores colors used in the thesis document and in some plots.
