@@ -1,0 +1,64 @@
+import xeofs
+
+def _aggregate_temporal(ds):
+    """Implementation of aggregation on the temporal dimension."""
+    return ds.mean(dim="time")
+
+def aggregate_temporal(ds, path=None):
+    """Perform aggregation on temporal dimension `time`.
+    
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Dataset containing a single indicator as variable and
+        time, latitude, longitude and parameters as dimensions.
+    path : str, pathlib.Path
+        Filename of the aggregated dataset to save it to disk.
+        By default no saving is performed.
+    
+    Return
+    ------
+    Original dataset with just parameters as dimensions.
+    """
+    _ds = ds.chunk(chunks={"time": -1})
+    _return = _aggregate_temporal(_ds)
+    if path is not None:
+        _return.to_netcdf(path)
+    return _return
+
+def _aggregate_spatial(ds, latitude, longitude):
+    """Implementation of aggregation on the spatial dimensions."""
+    dim = list(ds.coords.keys())
+    dim.remove(latitude)
+    dim.remove(longitude)
+    model = xeofs.models.EOF(n_modes=5, compute=False, solver="full", use_coslat=True)
+    model.fit(ds, dim=dim)
+    _da = model.scores(normalized=False).sel(mode=1, drop=True)
+    _da.attrs.pop("solver_kwargs", None)
+    return _da.to_dataset(name=list(ds.data_vars.keys())[0])
+
+def aggregate_spatial(ds, path=None, latitude="latitude", longitude="longitude"):
+    """Perform aggregation on spatial dimensions `latitude` and `longitude`.
+    
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        Dataset containing a single indicator as variable and
+        latitude, longitude and parameters as dimensions.
+    path : str, pathlib.Path
+        Filename of the aggregated dataset to save it to disk.
+        By default no saving is performed.
+    latitude : str
+        Name of the latitude dimension, specify if the dataset uses a different one.
+    longitude : str
+        Name of the longitude dimension, specify if the dataset uses a different one.
+    
+    Return
+    ------
+    Original dataset with just parameters as dimensions.
+    """
+    _ds = ds.chunk(chunks={latitude: -1, longitude: -1})
+    _return = _aggregate_spatial(_ds, latitude, longitude)
+    if path is not None:
+        _return.to_netcdf(path)
+    return _return
