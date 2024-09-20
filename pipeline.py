@@ -12,7 +12,7 @@ if __name__ == "__main__":
     
     ######### Aggregate hazard indicators #########
     
-    # TODO: these variables are defined earlier in the pipeline,
+    # TODO these variables would be defined earlier in the pipeline,
     # use them when the pipeline is complete.
     dir_indicators = dir_data / "indicators"
     indicators = (
@@ -23,22 +23,23 @@ if __name__ == "__main__":
         "cwd"
     )
     
-    experiments = ["historical"]
-    experiments.extend(thesis.scenario)
-    periods = ["reference"]
-    periods.extend(thesis.time_horizons.keys())
-    for e in experiments:
-        for y in periods:
-            for m in thesis.models:
-                for i in indicators:
-                    filename = dir_indicators / e / y / f"{m}_{i}.nc"
-                    if not filename.exists():
-                        continue
-                    # Else apply aggregation to indicator.
-                    ds = xarray.open_dataset(filename, decode_timedelta=False)
-                    dir_field = filename.parent / "field"
-                    dir_field.mkdir(parents=True, exist_ok=True)
-                    ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
-                    dir_hazard = filename.parent / "hazard"
-                    dir_hazard.mkdir(parents=True, exist_ok=True)
-                    ds_hazard = aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
+    def aggregate(experiments, periods, models, indicators, dir_indicators):
+        for e in experiments:
+            for y in periods:
+                for m in models:
+                    for i in indicators:
+                        filename = dir_indicators / e / y / f"{m}_{i}.nc"
+                        if not filename.exists():
+                            print("Skip non-existing file {filename}")  # TODO better put in proper logging system.
+                            continue
+                        # Else apply aggregation to indicator.
+                        ds = xarray.open_dataset(filename, decode_timedelta=False)
+                        dir_field = filename.parent / "field"
+                        dir_field.mkdir(parents=True, exist_ok=True)
+                        ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
+                        dir_hazard = filename.parent / "hazard"
+                        dir_hazard.mkdir(parents=True, exist_ok=True)
+                        aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
+    
+    aggregate(("historical",), ("reference",), thesis.models, indicators, dir_indicators)
+    aggregate(thesis.scenario, thesis.time_horizons.keys(), thesis.models, indicators, dir_indicators)
