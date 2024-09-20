@@ -24,20 +24,21 @@ if __name__ == "__main__":
     )
     
     experiments = ["historical"]
-    #experiments.extend(thesis.scenario)
+    experiments.extend(thesis.scenario)
     periods = ["reference"]
-    #periods.extend(thesis.time_horizons.keys())
-    for e in experiments:  # MC 191651ASEP24 apply only to the available ones.
+    periods.extend(thesis.time_horizons.keys())
+    for e in experiments:
         for m in thesis.models:
             for i in indicators:
                 for y in periods:
                     filename = dir_indicators / e / f"{m}_{i}_{y}.nc"
                     if not filename.exists():
                         continue
+                    # Else apply aggregation to indicator.
                     ds = xarray.open_dataset(filename, decode_timedelta=False)
                     dir_field = filename.parent / "field"
                     dir_field.mkdir(parents=True, exist_ok=True)
-                    aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
+                    ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
                     dir_hazard = filename.parent / "hazard"
                     dir_hazard.mkdir(parents=True, exist_ok=True)
-                    aggregation.aggregate_spatial(ds, path=dir_hazard / filename.name)
+                    ds_hazard = aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
