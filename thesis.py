@@ -5,7 +5,7 @@ coords = {
     "ciampino": (41.799, 12.594)
 }
 
-scenario = ("ssp126", "ssp245", "ssp370")
+scenarios = ("ssp126", "ssp245", "ssp370")
 
 reference_periods = {
     "torino": slice("1971-01-01", "2000-12-31"),

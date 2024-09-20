@@ -6,7 +6,7 @@ if __name__ == "__main__":
     import settings
     import thesis
     
-    dir_data = settings.dir_data / settings.location
+    dir_data = settings.dir_data / settings.site
     
     
     
@@ -42,4 +42,4 @@ if __name__ == "__main__":
                         aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
     
     aggregate(("historical",), ("reference",), thesis.models, indicators, dir_indicators)
-    aggregate(thesis.scenario, thesis.time_horizons.keys(), thesis.models, indicators, dir_indicators)
+    aggregate(thesis.scenarios, thesis.time_horizons.keys(), thesis.models, indicators, dir_indicators)
