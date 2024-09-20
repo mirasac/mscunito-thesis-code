@@ -28,10 +28,10 @@ if __name__ == "__main__":
     periods = ["reference"]
     periods.extend(thesis.time_horizons.keys())
     for e in experiments:
-        for m in thesis.models:
-            for i in indicators:
-                for y in periods:
-                    filename = dir_indicators / e / f"{m}_{i}_{y}.nc"
+        for y in periods:
+            for m in thesis.models:
+                for i in indicators:
+                    filename = dir_indicators / e / y / f"{m}_{i}.nc"
                     if not filename.exists():
                         continue
                     # Else apply aggregation to indicator.
