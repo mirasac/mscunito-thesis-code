@@ -33,7 +33,20 @@ if __name__ == "__main__":
                             print("Skip non-existing file {filename}")  # TODO better put in proper logging system.
                             continue
                         # Else apply aggregation to indicator.
-                        ds = xarray.open_dataset(filename, decode_timedelta=False)
+                        # Beware that xarray reads integer numbers in
+                        # NetCDF files as time intervals by default. This
+                        # means that the numerical representation of
+                        # NaT values is loaded, instead of setting NaN. This
+                        # further operation is done manually by exploiting the
+                        # fact that only some indicators result in
+                        # integer values which are always non negative.
+                        if i in ("heat_wave_index", "heat_wave_max_length", "wetdays", "cwd"):
+                            decode_timedelta = False
+                        else:
+                            decode_timedelta = True
+                        ds = xarray.open_dataset(filename, decode_timedelta=decode_timedelta)
+                        if not decode_timedelta:
+                            ds = ds.where((ds >= 0))
                         dir_field = filename.parent / "field"
                         dir_field.mkdir(parents=True, exist_ok=True)
                         ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
