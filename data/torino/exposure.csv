@@ -1,0 +1,9 @@
+driver,indicator,value,units,notes
+Runways,area,198000,m2,
+Taxiways,area,NA,m2,
+Tower,height,NA,m,
+Apron,area,NA,m2,
+Terminals,area,51150,m2,
+Offices and other buildings,area,4245,m2,
+Airport accesses systems,area,NA,m2,
+Carparks,number,3000,,number of parking spaces

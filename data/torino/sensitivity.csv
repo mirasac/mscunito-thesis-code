@@ -1,0 +1,10 @@
+driver,indicator,value,units,notes
+Soil sealing,area,2450000,m2,
+Passengers,number,3219317,,number in 2006
+Buildings in bad conditions,number,NA,,number
+Age buildings,number,52,,
+Air traffic,number,53169,,movements in 2006
+Parking accesses,number,NA,,number in 2006
+Staff work outside the airport,number,NA,,number
+Underground infrastructures,area,0,m2,
+Flooded areas,fractionarea,NA,%,

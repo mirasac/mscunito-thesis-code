@@ -1,6 +1,7 @@
 gitignore/
 
-data/torino/
+data/torino/*
+!data/torino/*.csv
 data/ciampino/*
 !data/ciampino/*.csv
 data/bologna/reference_hourly.nc
