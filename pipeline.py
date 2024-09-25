@@ -30,7 +30,7 @@ if __name__ == "__main__":
                     for i in indicators:
                         filename = dir_indicators / e / y / f"{m}_{i}.nc"
                         if not filename.exists():
-                            print("Skip non-existing file {filename}")  # TODO better put in proper logging system.
+                            print(f"Skip non-existing file {filename}")  # TODO better put in proper logging system.
                             continue
                         # Else apply aggregation to indicator.
                         # Beware that xarray reads integer numbers in
