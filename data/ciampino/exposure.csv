@@ -1,5 +1,5 @@
 driver,indicator,value,units,notes
-Runaways,area,9900,m2,
+Runways,area,9900,m2,
 Taxiways,area,NA,m2,
 Tower,height,60,m,
 Apron,area,NA,m2,
