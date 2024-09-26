@@ -1,8 +1,8 @@
 # Units: (degrees_north, degrees_east).
 coords = {
-    "torino": (45.198, 7.652),
-    "bologna": (44.535, 11.288),
-    "ciampino": (41.799, 12.594)
+    "torino": (45.198, 7.652),  # From Google Maps, from ENAC instead: (45.203, 7.649).
+    "bologna": (44.535, 11.288),  # From Google Maps.
+    "ciampino": (41.799, 12.594)  # From Google Maps, from ENAC instead: (41.799, 12.597).
 }
 
 scenarios = ("ssp126", "ssp245", "ssp370")
