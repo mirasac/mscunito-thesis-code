@@ -2,33 +2,11 @@ if __name__ == "__main__":
     # Imports are here and not outside to speed up script if not run directly (e.g. in case of import elsewhere).
     import xarray
     
-    from braun.utils import aggregation
+    from braun.utils import (aggregation, generic)
     import settings
     import thesis
     
     dir_data = settings.dir_data / settings.site
-    
-    def _open_dataset(filename, indicator: str):
-        """Beware that xarray reads integer numbers in NetCDF files as
-        time intervals by default. This means that
-        the numerical representation of NaT values is loaded, instead of
-        setting NaN. This further operation is done manually by exploiting
-        the fact that only some indicators result in integer values
-        which are always non negative.
-        """
-        if indicator in (
-            "heat_wave_index",
-            "heat_wave_max_length",
-            "wetdays",
-            "cwd"
-        ):
-            decode_timedelta = False
-        else:
-            decode_timedelta = True
-        ds = xarray.open_dataset(filename, decode_timedelta=decode_timedelta)
-        if not decode_timedelta:
-            ds = ds.where((ds >= 0))
-        return ds
     
     
     
@@ -55,7 +33,16 @@ if __name__ == "__main__":
                             print(f"Skip non-existing file {filename}")  # TODO better put in proper logging system.
                             continue
                         # Else apply aggregation to indicator.
-                        ds = _open_dataset(filename, i)
+                        ds = None
+                        if i in (
+                            "heat_wave_index",
+                            "heat_wave_max_length",
+                            "wetdays",
+                            "cwd"
+                        ):
+                            ds = generic.open_dataset_NaT(filename)
+                        else:
+                            ds = xarray.open_dataset(filename)
                         dir_field = filename.parent / "field"
                         dir_field.mkdir(parents=True, exist_ok=True)
                         ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
