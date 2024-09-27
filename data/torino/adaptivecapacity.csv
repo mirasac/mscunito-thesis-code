@@ -1,6 +1,6 @@
 driver,indicator,value,units,notes
 Vegetated area in the airport,presence,0.1,,Present
-Risk awareness,level,0.1,,ISO 50001 (energy saving)
+Risk awareness,level,0.3,,ISO 50001 (energy saving)
 Green roof,presence,NA,,
 Green wall,presence,NA,,
 Heat resistant coating,presence,NA,,
