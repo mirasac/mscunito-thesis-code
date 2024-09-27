@@ -8,6 +8,28 @@ if __name__ == "__main__":
     
     dir_data = settings.dir_data / settings.site
     
+    def _open_dataset(filename, indicator: str):
+        """Beware that xarray reads integer numbers in NetCDF files as
+        time intervals by default. This means that
+        the numerical representation of NaT values is loaded, instead of
+        setting NaN. This further operation is done manually by exploiting
+        the fact that only some indicators result in integer values
+        which are always non negative.
+        """
+        if indicator in (
+            "heat_wave_index",
+            "heat_wave_max_length",
+            "wetdays",
+            "cwd"
+        ):
+            decode_timedelta = False
+        else:
+            decode_timedelta = True
+        ds = xarray.open_dataset(filename, decode_timedelta=decode_timedelta)
+        if not decode_timedelta:
+            ds = ds.where((ds >= 0))
+        return ds
+    
     
     
     ######### Aggregate hazard indicators #########
@@ -23,7 +45,7 @@ if __name__ == "__main__":
         "cwd"
     )
     
-    def aggregate(experiments, periods, models, indicators, dir_indicators):
+    def _aggregate(experiments, periods, models, indicators, dir_indicators):
         for e in experiments:
             for y in periods:
                 for m in models:
@@ -33,20 +55,7 @@ if __name__ == "__main__":
                             print(f"Skip non-existing file {filename}")  # TODO better put in proper logging system.
                             continue
                         # Else apply aggregation to indicator.
-                        # Beware that xarray reads integer numbers in
-                        # NetCDF files as time intervals by default. This
-                        # means that the numerical representation of
-                        # NaT values is loaded, instead of setting NaN. This
-                        # further operation is done manually by exploiting the
-                        # fact that only some indicators result in
-                        # integer values which are always non negative.
-                        if i in ("heat_wave_index", "heat_wave_max_length", "wetdays", "cwd"):
-                            decode_timedelta = False
-                        else:
-                            decode_timedelta = True
-                        ds = xarray.open_dataset(filename, decode_timedelta=decode_timedelta)
-                        if not decode_timedelta:
-                            ds = ds.where((ds >= 0))
+                        ds = _open_dataset(filename, i)
                         dir_field = filename.parent / "field"
                         dir_field.mkdir(parents=True, exist_ok=True)
                         ds_field = aggregation.aggregate_temporal(ds, path=dir_field / filename.name)
@@ -54,5 +63,5 @@ if __name__ == "__main__":
                         dir_hazard.mkdir(parents=True, exist_ok=True)
                         aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
     
-    aggregate(("historical",), ("reference",), thesis.models, indicators, dir_indicators)
-    aggregate(thesis.scenarios, thesis.time_horizons.keys(), thesis.models, indicators, dir_indicators)
+    _aggregate(("historical",), ("reference",), thesis.models, indicators, dir_indicators)
+    _aggregate(thesis.scenarios, thesis.time_horizons.keys(), thesis.models, indicators, dir_indicators)
