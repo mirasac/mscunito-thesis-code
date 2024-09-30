@@ -18,13 +18,13 @@ def aggregate_temporal(ds, path=None, **kwargs):
     
     Return
     ------
-    Original dataset with just parameters as dimensions.
+    Tuple of objects, the first one is the aggregated dataset.
     """
     _ds = ds.chunk(chunks={"time": -1})
-    _return = _aggregate_temporal(_ds, **kwargs)
+    _ds = _aggregate_temporal(_ds, **kwargs)
     if path is not None:
-        _return.to_netcdf(path)
-    return _return
+        _ds.to_netcdf(path)
+    return (_ds,)
 
 def _aggregate_spatial(ds, latitude, longitude):
     """Implementation of aggregation on the spatial dimensions."""
@@ -34,8 +34,9 @@ def _aggregate_spatial(ds, latitude, longitude):
     model = xeofs.models.EOF(n_modes=5, compute=False, solver="full", use_coslat=True)
     model.fit(ds, dim=dim)
     _da = model.scores(normalized=False).sel(mode=1, drop=True)
-    _da.attrs.pop("solver_kwargs", None)
-    return _da.to_dataset(name=list(ds.data_vars.keys())[0])
+    _da.attrs.pop("solver_kwargs", None)  # This variable gives problems when saving NetCDF. 
+    _ds = _da.to_dataset(name=list(ds.data_vars.keys())[0])
+    return (_ds, model)
 
 def aggregate_spatial(ds, path=None, latitude="latitude", longitude="longitude"):
     """Perform aggregation on spatial dimensions `latitude` and `longitude`.
@@ -55,10 +56,10 @@ def aggregate_spatial(ds, path=None, latitude="latitude", longitude="longitude")
     
     Return
     ------
-    Original dataset with just parameters as dimensions.
+    Tuple of objects, the first one is the aggregated dataset.
     """
     _ds = ds.chunk(chunks={latitude: -1, longitude: -1})
-    _return = _aggregate_spatial(_ds, latitude, longitude)
+    _ds, model = _aggregate_spatial(_ds, latitude, longitude)
     if path is not None:
-        _return.to_netcdf(path)
-    return _return
+        _ds.to_netcdf(path)
+    return (_ds, model)
