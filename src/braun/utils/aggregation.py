@@ -1,10 +1,10 @@
 import xeofs
 
-def _aggregate_temporal(ds):
+def _aggregate_temporal(ds, **kwargs):
     """Implementation of aggregation on the temporal dimension."""
-    return ds.mean(dim="time")
+    return ds.mean(dim="time", **kwargs)
 
-def aggregate_temporal(ds, path=None):
+def aggregate_temporal(ds, path=None, **kwargs):
     """Perform aggregation on temporal dimension `time`.
     
     Parameters
@@ -21,14 +21,14 @@ def aggregate_temporal(ds, path=None):
     Original dataset with just parameters as dimensions.
     """
     _ds = ds.chunk(chunks={"time": -1})
-    _return = _aggregate_temporal(_ds)
+    _return = _aggregate_temporal(_ds, **kwargs)
     if path is not None:
         _return.to_netcdf(path)
     return _return
 
 def _aggregate_spatial(ds, latitude, longitude):
     """Implementation of aggregation on the spatial dimensions."""
-    dim = list(ds.coords.keys())
+    dim = list(ds.sizes.keys())
     dim.remove(latitude)
     dim.remove(longitude)
     model = xeofs.models.EOF(n_modes=5, compute=False, solver="full", use_coslat=True)
