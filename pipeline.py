@@ -3,6 +3,7 @@ if __name__ == "__main__":
     import xarray
     
     from braun.utils import (aggregation, generic)
+    import braun.packages.xeofs
     import settings
     import thesis
     
@@ -58,6 +59,7 @@ if __name__ == "__main__":
             dir_hazard.mkdir(parents=True, exist_ok=True)
             ds_field_ref = _ds.chunk(chunks={"latitude": -1, "longitude": -1})
             _, model = aggregation.aggregate_spatial(ds_field_ref, path=dir_hazard / filename.name)
+            braun.packages.xeofs.save(model, dir_hazard / f"{filename.name}.xeofs")
             ds.close()  # Release resources, put here to allow chunks loading above.
             
             # Then aggregate indicators of future periods.
@@ -85,7 +87,8 @@ if __name__ == "__main__":
                     dir_hazard = filename.parent / "hazard"
                     dir_hazard.mkdir(parents=True, exist_ok=True)
                     ds_field = _ds.chunk(chunks={"latitude": -1, "longitude": -1})
-                    aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
+                    _, _model = aggregation.aggregate_spatial(ds_field, path=dir_hazard / filename.name)
+                    braun.packages.xeofs.save(_model, dir_hazard / f"{filename.name}.xeofs")
                     # The actual spatial aggregation is made on anomalies.
                     dir_hazard_anomaly = filename.parent / "hazard_anomaly"
                     dir_hazard_anomaly.mkdir(parents=True, exist_ok=True)
