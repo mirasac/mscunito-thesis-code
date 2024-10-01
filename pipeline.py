@@ -1,7 +1,6 @@
 if __name__ == "__main__":
     # Imports are here and not outside to speed up script if not run directly (e.g. in case of import elsewhere).
     import xarray
-    import xeofs
     
     from braun.utils import (aggregation, generic)
     import settings

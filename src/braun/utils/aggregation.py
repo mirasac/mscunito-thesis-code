@@ -1,3 +1,4 @@
+import pathlib
 import xeofs
 
 def _aggregate_temporal(ds, **kwargs):
@@ -23,6 +24,7 @@ def aggregate_temporal(ds, path=None, **kwargs):
     _ds = ds.chunk(chunks={"time": -1})
     _ds = _aggregate_temporal(_ds, **kwargs)
     if path is not None:
+        path = pathlib.Path(path).resolve()
         _ds.to_netcdf(path)
     return (_ds,)
 
@@ -31,7 +33,7 @@ def _aggregate_spatial(ds, latitude, longitude):
     dim = list(ds.sizes.keys())
     dim.remove(latitude)
     dim.remove(longitude)
-    model = xeofs.models.EOF(n_modes=5, compute=False, solver="full", use_coslat=True)
+    model = xeofs.single.EOF(n_modes=5, compute=False, solver="full", use_coslat=True)
     model.fit(ds, dim=dim)
     _da = model.scores(normalized=False).sel(mode=1, drop=True)
     _da.attrs.pop("solver_kwargs", None)  # This variable gives problems when saving NetCDF. 
@@ -61,5 +63,6 @@ def aggregate_spatial(ds, path=None, latitude="latitude", longitude="longitude")
     _ds = ds.chunk(chunks={latitude: -1, longitude: -1})
     _ds, model = _aggregate_spatial(_ds, latitude, longitude)
     if path is not None:
+        path = pathlib.Path(path).resolve()
         _ds.to_netcdf(path)
     return (_ds, model)
