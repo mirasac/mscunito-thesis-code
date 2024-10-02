@@ -16,22 +16,9 @@ if __name__ == "__main__":
     # TODO these variables would be defined earlier in the pipeline,
     # use them when the pipeline is complete.
     dir_indicators = dir_data / "indicators"
-    indicators = (
-        "heat_wave_index",
-        "heat_wave_max_length",
-        "max_n_day_precipitation_amount",
-        "wetdays",
-        "cwd"
-    )
-    
-    INDICATORS_INTEGER = (
-        "heat_wave_index",
-        "heat_wave_max_length",
-        "wetdays",
-        "cwd"
-    )
-    
-    INDICATORS_INVALID = ("heat_wave_max_length",)
+    indicators = thesis.INDICATORS
+    indicators_integer = thesis.INDICATORS_INTEGER
+    indicators_invalid = thesis.INDICATORS_INVALID
     
     for m in thesis.models:
         for i in indicators:
@@ -42,13 +29,13 @@ if __name__ == "__main__":
                 continue
             # Else apply aggregation to indicator.
             ds = None
-            if i in INDICATORS_INTEGER:
+            if i in indicators_integer:
                 ds = generic.open_dataset_NaT(filename)
             else:
                 ds = xarray.open_dataset(filename)
             _ds = ds
             # Remove invalid combinations of parameters, otherwise EOF breaks.
-            if i in INDICATORS_INVALID:
+            if i in indicators_invalid:
                 _ds = _ds.dropna(dim="thresh_tasmin", how="any")
             # Aggregate temporal dimension.
             dir_field = filename.parent / "field"
@@ -71,13 +58,13 @@ if __name__ == "__main__":
                         continue
                     # Else apply aggregation to indicator.
                     ds = None
-                    if i in INDICATORS_INTEGER:
+                    if i in indicators_integer:
                         ds = generic.open_dataset_NaT(filename)
                     else:
                         ds = xarray.open_dataset(filename)
                     _ds = ds
                     # Remove invalid combinations of parameters, otherwise EOF breaks.
-                    if i in INDICATORS_INVALID:
+                    if i in indicators_invalid:
                         _ds = _ds.dropna(dim="thresh_tasmin", how="any")
                     # Aggregate temporal dimension.
                     dir_field = filename.parent / "field"

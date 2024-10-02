@@ -66,3 +66,23 @@ models = (
 drivers = ("heat_wave", "heavy_precipitation")
 
 calendar = "noleap"  # For a list of available calendars check http://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#calendar.
+
+# TODO better implement the load of these at import of module `braun`.
+INDICATORS = (
+    "heat_wave_index",
+    "heat_wave_max_length",
+    "max_n_day_precipitation_amount",
+    "wetdays",
+    "cwd"
+)
+
+# TODO better implement the load of these at import of module `braun`.
+INDICATORS_INTEGER = (
+    "heat_wave_index",
+    "heat_wave_max_length",
+    "wetdays",
+    "cwd"
+)
+
+# TODO better implement the load of these at import of module `braun`.
+INDICATORS_INVALID = ("heat_wave_max_length",)
