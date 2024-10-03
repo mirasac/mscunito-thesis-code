@@ -40,6 +40,9 @@ if __name__ == "__main__":
             # Aggregate temporal dimension.
             dir_field = filename.parent / "field"
             dir_field.mkdir(parents=True, exist_ok=True)
+            _dir = dir_field.resolve() / "std"
+            _dir.mkdir(parents=True, exist_ok=True)
+            _ds.std(dim="time", skipna=False, ddof=1).to_netcdf(path=_dir / filename.name)
             _ds, = aggregation.aggregate_temporal(_ds, path=dir_field / filename.name, skipna=False)
             # Aggregate spatial dimension.
             dir_hazard = filename.parent / "hazard"
@@ -69,6 +72,9 @@ if __name__ == "__main__":
                     # Aggregate temporal dimension.
                     dir_field = filename.parent / "field"
                     dir_field.mkdir(parents=True, exist_ok=True)
+                    _dir = dir_field.resolve() / "std"
+                    _dir.mkdir(parents=True, exist_ok=True)
+                    _ds.std(dim="time", skipna=False, ddof=1).to_netcdf(path=_dir / filename.name)
                     _ds, = aggregation.aggregate_temporal(_ds, path=dir_field / filename.name, skipna=False)
                     # Aggregate spatial dimension.
                     dir_hazard = filename.parent / "hazard"
