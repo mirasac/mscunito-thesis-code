@@ -1,3 +1,4 @@
+import os
 import pathlib
 
 import xarray
@@ -14,3 +15,5 @@ dir_figures = dir_document / "figures"  # Directory where figures are stored.
 site = "torino"  # Select the spatial center of the analysis, cf. thesis.coords keys.
 
 sep = '.'  # Directory separator in file name of archives.
+
+os.environ["CARTOPY_USER_BACKGROUNDS"] = str((dir_data / "maps" / "backgrounds").resolve())

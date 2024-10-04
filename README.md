@@ -47,3 +47,7 @@ Note that steps following step 3 do not depend on it: climatology is needed to e
 ## Color palette
 
 File `palette.json` stores colors used in the thesis document and in some plots.
+
+## Maps
+
+To create plots projected on maps the Python package [`cartopy`](https://doi.org/10.5281/zenodo.1182735) is used. Basemaps are from [Natural Earth](https://www.naturalearthdata.com/) and border data are provided by [GADM](https://gadm.org/).

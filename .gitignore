@@ -13,6 +13,7 @@ data/era5-2km/*
 data/era5-land/*
 !data/era5-land/eof/
 !data/era5-land/risk/
+data/maps/
 
 # Python
 **/.venv/

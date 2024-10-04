@@ -1,16 +1,27 @@
-import pathlib
-
+from cartopy.io import shapereader
 import matplotlib.pyplot as plt
 import xarray
 
-xarray.set_options(keep_attrs=True)
+import settings
+import thesis
+
+SIZE_A4 = (8.3, 11.7)
+"""Units are in inches, correspond to 210 mm x 297 mm."""
+
+FIGSIZE = (SIZE_A4[0], SIZE_A4[1] / 3.0)
+
+_half_width = 0.5  # Units: decimal degrees.
+EXTENT = (
+    thesis.coords[settings.site][1] - _half_width,
+    thesis.coords[settings.site][1] + _half_width,
+    thesis.coords[settings.site][0] - _half_width,
+    thesis.coords[settings.site][0] + _half_width
+)
+
+CACHE_SHAPEFILES = {}
 
 # Set up default directory for generated figures.
-_dir_document = pathlib.Path.home() / "mscunito-thesis-document"
-_dir_figures = _dir_document / "figures"
-if not _dir_document.exists():
-    _dir_figures = pathlib.Path.cwd() / "figures"
-_dir_figures.mkdir(parents=False, exist_ok=True)
+_dir_figures = settings.dir_figures
 
 def savefig(fname, format=None, **kwargs):
     """Similar to matplotlib.pyplot.savefig but with files stored
@@ -35,6 +46,75 @@ def autosavefig(func):
         savefig(fname, format, bbox_inches="tight")
         return _return
     return wrapper
+
+def cache_shapefile(filename: str):
+    if filename not in CACHE_SHAPEFILES:
+        CACHE_SHAPEFILES[filename] = list(shapereader.Reader(filename).geometries())
+    return CACHE_SHAPEFILES[filename]
+
+
+
+
+
+
+
+
+
+
+######### Utility functions which should go in braun.utils.generic but loading of generic settings is needed #########
+
+def loop_models_indicators(func, models=None, indicators=None, **func_kwargs):
+    """Loop for each item in `models` and `indicators` function `func` called
+    with arguments `func_kwargs`.
+    """
+    if models is None:
+        models = thesis.models
+    if indicators is None:
+        indicators = thesis.INDICATORS
+    for m in models:
+        for i in indicators:
+            func(m, i, **func_kwargs)
+
+# TODO improve implementation with recursion, see itertools for inspiration.
+def loop_models_indicators_experiments(func, models=None, indicators=None, experiments=None, **func_kwargs):
+    """Loop for each item in `models`, `indicators` and `experiments` function
+    `func` called with arguments `func_kwargs`.
+    """
+    if models is None:
+        models = thesis.models
+    if indicators is None:
+        indicators = thesis.INDICATORS
+    if experiments is None:
+        experiments = ["historical"]
+        experiments.extend(thesis.scenarios)
+    for m in models:
+        for i in indicators:
+            for e in experiments:
+                func(m, i, e, **func_kwargs)
+
+def is_available_period(experiment, period):
+    """Thesis-specific restrictions on temporal dimension.
+    It could be performed directly on datasets but
+    by design it is applied prior to any coordinate selection.
+    """
+    _return = False
+    if experiment in ("historical",):
+        if period in ("reference",):
+            _return = True
+    elif experiment in thesis.scenarios:
+        if period in thesis.time_horizons.keys():
+            _return = True
+    return _return
+
+
+
+
+
+
+
+
+
+######### Generic plots using xarray #########
 
 def _coordinates_facet(xobject: xarray.Dataset | xarray.DataArray):
     # Assume coordinates are in ascending order, hence facet plot is created
@@ -112,3 +192,80 @@ def data_vars_1d(ds, data_vars=None, label_attrs_key=None, **kwargs):
         ds[v].plot(label=label, **kwargs)
     _plot.axes[0].grid(which="both")
     return _plot
+
+
+
+
+
+
+
+
+
+######### Plot maps #########
+
+import cartopy.crs
+import matplotlib.transforms as trn
+
+def add_background(ax=None):
+    # First version: this does not load high-res images.
+    #ax.stock_img()
+    # Second version: slower except if some caching is implemented.
+    #filename_raster = settings.dir_data / "maps" / "backgrounds" / "NE1_HR_LC_SR_W_DR" / "NE1_HR_LC_SR_W_DR.tif"
+    #img = plt.imread(filename_raster)
+    #with Image.open(filename_raster) as img:
+    #    ax.imshow(img, origin="upper", extent=EXTENT, transform=crs)
+    from PIL import Image
+    
+    if ax is None:
+        ax = plt.gca()
+    max_image_pixels_tmp = Image.MAX_IMAGE_PIXELS
+    Image.MAX_IMAGE_PIXELS = None
+    ax.background_img(name="NaturalEarth1ReliefWaterDrainages", resolution="medium", extent=ax.get_extent(), cache=True)
+    Image.MAX_IMAGE_PIXELS = max_image_pixels_tmp
+    return ax
+
+def add_borders(ax=None):    
+    if ax is None:
+        ax = plt.gca()
+    filename_regions = settings.dir_data / "maps" / "gadm41_ITA" / "gadm41_ITA_1.shp"
+    shapes = cache_shapefile(str(filename_regions.resolve()))
+    ax.add_geometries(shapes, cartopy.crs.PlateCarree(), edgecolor=("black", 1.0), facecolor=("grey", 0.0), linestyle="dotted")
+    filename_borders = settings.dir_data / "maps" / "gadm41_ITA" / "gadm41_ITA_0.shp"
+    shapes = cache_shapefile(str(filename_borders.resolve()))
+    ax.add_geometries(shapes, cartopy.crs.PlateCarree(), edgecolor=("black", 1.0), facecolor=("grey", 0.0), linestyle="solid")
+    return ax
+
+def set_map(ax=None, extent=None, crs=None):
+    if ax is None:
+        ax = plt.gca()
+    if extent is None:
+        ax.set_global()
+    else:
+        ax.set_extent(extent, crs=crs)
+    add_background(ax=ax)
+    add_borders(ax=ax)
+    return ax
+
+def plot_site(x_site, y_site, ax=None, label=None):
+    if ax is None:
+        ax = plt.gca()
+    markersize = 5
+    ax.plot(
+        x_site,
+        y_site,
+        marker='.',
+        color="black",
+        markersize=markersize,
+        alpha=1
+    )
+    if label is not None:
+        geodetic_transform = cartopy.crs.Geodetic()._as_mpl_transform(ax)
+        ax.text(
+            x_site,
+            y_site,
+            label,
+            verticalalignment="top",
+            horizontalalignment="center",
+            transform=trn.offset_copy(geodetic_transform, units="dots", y=-1.5 * markersize)
+        )
+    return ax
