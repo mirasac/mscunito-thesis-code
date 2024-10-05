@@ -52,7 +52,7 @@ kiwisolver==1.4.5
 llvmlite==0.42.0
 locket==1.0.0
 MarkupSafe==2.1.5
-matplotlib==3.9.0
+matplotlib==3.9.2
 matplotlib-inline==0.1.7
 more-itertools==10.3.0
 msgpack==1.0.8
