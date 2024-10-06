@@ -10,8 +10,10 @@ def label_quantiles(filename: pathlib.Path, indicator):
     dir_bak = filename.parent / "bak_quantile_coords"
     dir_bak.mkdir(parents=True, exist_ok=True)
     filename_bak = filename.rename(dir_bak / filename.name)
+    # Open function from xarray guarantees round trip even if naturals are loaded as timedelta.
     ds = xarray.load_dataset(filename_bak)
     _ds = None
+    # TODO better do this in a programmatic way.
     if indicator in ("heat_wave_index",):
         quantiles = [0.9, 0.97, 0.99, 0.999, 1.0]
         _ds = ds.assign_coords({"thresh_q": ("thresh", quantiles)})
@@ -30,16 +32,8 @@ def label_quantiles(filename: pathlib.Path, indicator):
     return _ds
 
 if __name__ == "__main__":
-    indicators = (
-        "heat_wave_index",
-        "heat_wave_max_length",
-        "max_n_day_precipitation_amount",
-        "wetdays",
-        "cwd"
-    )
-    
     for m in tqdm.tqdm(thesis.models):
-        for i in indicators:
+        for i in thesis.INDICATORS:
             # Apply to historical data.
             filename = settings.dir_data / settings.site / "indicators" / "historical" / "reference" / f"{m}_{i}.nc"
             label_quantiles(filename, i)
