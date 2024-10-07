@@ -152,3 +152,9 @@ if __name__ == "__main__":
                 dir_scalar = dir_normalized.parent / "scalar"
                 dir_scalar.mkdir(parents=True, exist_ok=True)
                 ds.to_netcdf(dir_scalar / f"{m}.nc")
+                
+                # Evaluate scalar value for risk.
+                risk = (exposure + ds + vulnerability) / 3.0  # Weighted mean with unitary weights.
+                dir_risk = dir_scalar.parent / "risk"
+                dir_risk.mkdir(parents=True, exist_ok=True)
+                risk.to_netcdf(dir_risk / f"{m}.nc")
