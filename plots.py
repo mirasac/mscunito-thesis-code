@@ -8,8 +8,8 @@ import thesis
 SIZE_A4 = (8.3, 11.7)
 """Units are in inches, correspond to 210 mm x 297 mm."""
 
+# TODO these are thesis-specific values, better put them in settings of thesis.
 FIGSIZE = (SIZE_A4[0], SIZE_A4[1] / 3.0)
-
 _half_width = 0.5  # Units: decimal degrees.
 EXTENT = (
     thesis.coords[settings.site][1] - _half_width,
