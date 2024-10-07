@@ -47,3 +47,12 @@ def load_dataset_NaT(filename_or_obj, other=None, drop=None, **kwargs):
     ds = xarray.load_dataset(filename_or_obj, decode_timedelta=False, **kwargs)
     ds = ds.where((ds >= 0), **where_kwargs)
     return ds
+
+def rename_coords(ds, prefix="", sep=""):
+    """Rename all coordinates of `ds` by prefixing `prefix` to
+    the original name, separated by `sep`.
+    """
+    name_dict = dict.fromkeys(ds.coords)
+    for k in name_dict.keys():
+        name_dict[k] = f"{prefix}{sep}{k}"
+    return ds.rename(name_dict)

@@ -1,8 +1,9 @@
 if __name__ == "__main__":
     # Imports are here and not outside to speed up script if not run directly (e.g. in case of import elsewhere).
+    import pandas
     import xarray
     
-    from braun.utils import (aggregation, generic)
+    from braun.utils import (aggregation, csvparser, generic)
     import braun.packages.xeofs
     import settings
     import thesis
@@ -115,3 +116,39 @@ if __name__ == "__main__":
                     dir_normalized = dir_indicators / s / y / "normalized"
                     dir_normalized.mkdir(parents=True, exist_ok=True)
                     ds_z_score.to_netcdf(dir_normalized / filename)
+    
+    
+    
+    ######### Evaluate system-dependent indicators #########
+    
+    df_E = csvparser.load_indicators(dir_indicators / "exposure.csv")
+    
+    df_a = csvparser.load_indicators(dir_indicators / "adaptivecapacity.csv")
+    df_s = csvparser.load_indicators(dir_indicators / "sensitivity.csv")
+    df_V = pandas.concat([df_a, df_s])
+    
+    
+    
+    ######### Evaluate scalar values #########
+    
+    # Evaluate scalar value for exposure.
+    exposure = df_E["value"].mean(axis=0, skipna=True)  # Weighted mean with unitary weights.
+    
+    # Evaluate scalar value for vulnerability.
+    vulnerability = df_V["value"].mean(axis=0, skipna=True)  # Weighted mean with unitary weights.
+    
+    for m in thesis.models:
+        for s in thesis.scenarios:
+            for y in thesis.time_horizons.keys():
+                # Evaluate scalar value for hazard.
+                dir_normalized = dir_indicators / s / y / "normalized"
+                list_da = []
+                for i in thesis.INDICATORS:
+                    ds = xarray.load_dataset(dir_normalized / f"{m}_{i}.nc", decode_timedelta=False)
+                    ds = generic.rename_coords(ds, i, '_')
+                    list_da.append(ds[i])
+                da = sum(list_da) / len(list_da)  # Weighted mean with unitary weights.
+                ds = da.to_dataset(name="hazard")
+                dir_scalar = dir_normalized.parent / "scalar"
+                dir_scalar.mkdir(parents=True, exist_ok=True)
+                ds.to_netcdf(dir_scalar / f"{m}.nc")
