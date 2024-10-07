@@ -1,5 +1,6 @@
 from cartopy.io import shapereader
 import matplotlib.pyplot as plt
+import numpy
 import xarray
 
 import settings
@@ -269,3 +270,31 @@ def plot_site(x_site, y_site, ax=None, label=None):
             transform=trn.offset_copy(geodetic_transform, units="dots", y=-1.5 * markersize)
         )
     return ax
+
+
+
+
+
+
+
+
+
+######### Other plots #########
+
+def plot_norm_sided(model, indicator, experiment, period):
+    """Plot normalised indicator value alongside the original one."""
+    dir_data = settings.dir_data / settings.site / "indicators" / experiment / period
+    filename = f"{model}_{indicator}.nc"
+    ds = xarray.load_dataset(dir_data / "hazard_anomaly" / filename, decode_timedelta=False)
+    ds_norm = xarray.load_dataset(dir_data / "normalized" / filename, decode_timedelta=False)
+    
+    dim_c = 'c'
+    ds = ds.stack(dim={dim_c: [...]})
+    ds_norm = ds_norm.stack(dim={dim_c: [...]})
+    x = numpy.arange(0, ds.sizes[dim_c], 1)
+    
+    fig = plt.figure(num=1, figsize=FIGSIZE, clear=True, layout="constrained")
+    
+    axes = fig.subplots(nrows=1, ncols=2, sharex=True, sharey=True, squeeze=False)
+    axes[0][0].plot(x, ds[indicator].values, color="black", marker='.', linestyle="dotted")
+    axes[0][1].plot(x, ds_norm[indicator].values, color="black", marker='.', linestyle="dotted")

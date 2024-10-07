@@ -93,3 +93,25 @@ if __name__ == "__main__":
                     _ds = _da.to_dataset(name=list(ds.data_vars.keys())[0])  # Datasets have only one variable.
                     _ds.to_netcdf(dir_hazard_anomaly / filename.name)
                     ds.close()  # Release resources, put here to allow chunks loading above.
+    
+    
+    
+    ######### Normalise hazard indicators #########
+    
+    for m in thesis.models:
+        for i in indicators:
+            filename = f"{m}_{i}.nc"
+            # Use decode_timedelta=False because although values are already float,
+            # sometimes they are loaded as timedelta,
+            # probably because they are truncated at the right number of decimal places
+            # and they are all positive.
+            ds_historical = xarray.load_dataset(dir_indicators / "historical" / "reference" / "hazard" / filename, decode_timedelta=False)
+            mu = ds_historical.mean(skipna=True)
+            sigma = ds_historical.std(skipna=True, ddof=1)
+            for s in thesis.scenarios:
+                for y in thesis.time_horizons.keys():
+                    ds_scenario = xarray.load_dataset(dir_indicators / s / y / "hazard_anomaly" / filename, decode_timedelta=False)
+                    ds_z_score = (ds_scenario - mu) / sigma
+                    dir_normalized = dir_indicators / s / y / "normalized"
+                    dir_normalized.mkdir(parents=True, exist_ok=True)
+                    ds_z_score.to_netcdf(dir_normalized / filename)
