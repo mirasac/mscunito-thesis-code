@@ -1,0 +1,12 @@
+driver,indicator,value,units,notes
+Vegetated area in the airport,presence,0.1,,Present
+Risk awareness,level,0.3,,ISO 50001 (energy saving)
+Green roof,presence,NA,,
+Green wall,presence,NA,,
+Heat resistant coating,presence,NA,,
+Insurance policy for extreme events,presence,NA,,
+Guidelines for adaptation plan to climate change,presence,0.5,,Plans applied after 2010
+Evening departures,number,NA,,
+Efficient drainage system,presence,0.1,,Present
+Monitoring and alarm system,presence,0.9,,Not present
+Bioinfiltration and permeable pavements,presence,0.1,,Present

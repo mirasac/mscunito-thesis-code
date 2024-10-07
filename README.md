@@ -48,6 +48,11 @@ Note that steps following step 3 do not depend on it: climatology is needed to e
 
 File `palette.json` stores colors used in the thesis document and in some plots.
 
-## Maps
+## License
+
+Every file in this repository is covered by the license described in file `LICENSE`.
+There are some exceptions, which are described below.
+
+Exposure and vulnerability data on Ciampino's airport contained in files `data/ciampino/exposure.csv`, `data/ciampino/sensitivity.csv` and `data/ciampino/adaptivecapacity.csv` are collected from articles on [extreme temperature events](https://doi.org/10.1016/j.cliser.2023.100390) and [extreme precipitation events](https://doi.org/10.3390/su15097300) by De Vivo et al. which are under [Creative Commons Attribution (CC BY)](https://creativecommons.org/licenses/by/4.0/) license.
 
 To create plots projected on maps the Python package [`cartopy`](https://doi.org/10.5281/zenodo.1182735) is used. Basemaps are from [Natural Earth](https://www.naturalearthdata.com/) and border data are provided by [GADM](https://gadm.org/).
