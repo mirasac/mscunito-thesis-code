@@ -56,3 +56,14 @@ def rename_coords(ds, prefix="", sep=""):
     for k in name_dict.keys():
         name_dict[k] = f"{prefix}{sep}{k}"
     return ds.rename(name_dict)
+
+def set_quantile_dims(ds):
+    """Set coordinates for quantiles, i.e. ending with _q, as dimensions.
+    This works only if the swapped coordinates have identical dimension.
+    """
+    dims_dict = {}
+    for k in ds.sizes.keys():
+        new_dim = f"{k}_q"
+        if new_dim in ds.coords:
+            dims_dict[k] = new_dim
+    return ds.swap_dims(dims_dict=dims_dict)

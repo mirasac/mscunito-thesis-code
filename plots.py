@@ -107,6 +107,15 @@ def is_available_period(experiment, period):
             _return = True
     return _return
 
+def get_risk_thresholds(model, dir_data, n_pieces=5):
+    filename = dir_data / "historical" / "reference" / "risk" / f"{model}.nc"
+    ds = xarray.load_dataset(filename, decode_timedelta=False)
+    da = ds["risk"]
+    thresholds = numpy.linspace(0.0, 1.0, num=n_pieces + 1, endpoint=True)
+    #_return = da.quantile(thresholds).values
+    _return = da.min().values + (da.max().values - da.min().values) * thresholds
+    return _return
+
 
 
 
