@@ -8,6 +8,24 @@ import plots
 import settings
 import thesis
 
+def ax_distribution(ax, model, experiment, period, thresholds, bins=None, cumulative=False, norm=None, **norm_kwargs):
+    ds = xarray.load_dataset(settings.dir_data / settings.site / "indicators" / experiment / period / "risk" / f"{model}.nc", decode_timedelta=False)
+    x = ds["risk"].values.flatten()
+    if norm == "minmax":
+        x = braun.utils.generic.minmax(x, **norm_kwargs)
+        thresholds = braun.utils.generic.minmax(thresholds, **norm_kwargs)
+    elif norm == "standardize":
+        x = braun.utils.generic.standardize(x, **norm_kwargs)
+        thresholds = braun.utils.generic.standardize(thresholds, **norm_kwargs)
+    ax.hist(x, bins=bins, density=True, cumulative=cumulative, orientation="horizontal", color="black")
+    if cumulative:
+        ax.set_xlabel("Frequency")
+    else:
+        ax.set_xlabel("Density")
+    ax.grid(visible=True, which="major", axis="both")
+    ax.set_title(period)
+    plots.ax_risk_categories(ax, thresholds)
+
 def plot_compare_distribution(model, experiment, period, bins=None, cumulative=False, norm=False, **norm_kwargs):
     path_leaf = pathlib.Path(settings.site) / "indicators" / experiment / period / "risk"
     thresholds = None
@@ -41,24 +59,6 @@ def plot_compare_distribution(model, experiment, period, bins=None, cumulative=F
     fig.clear()
     plt.close(fig)
 
-def ax_distribution(ax, model, experiment, period, thresholds, bins=None, cumulative=False, norm=None, **norm_kwargs):
-    ds = xarray.load_dataset(settings.dir_data / settings.site / "indicators" / experiment / period / "risk" / f"{model}.nc", decode_timedelta=False)
-    x = ds["risk"].values.flatten()
-    if norm == "minmax":
-        x = braun.utils.generic.minmax(x, **norm_kwargs)
-        thresholds = braun.utils.generic.minmax(thresholds, **norm_kwargs)
-    elif norm == "standardize":
-        x = braun.utils.generic.standardize(x, **norm_kwargs)
-        thresholds = braun.utils.generic.standardize(thresholds, **norm_kwargs)
-    ax.hist(x, bins=bins, density=True, cumulative=cumulative, orientation="horizontal", color="black")
-    if cumulative:
-        ax.set_xlabel("Frequency")
-    else:
-        ax.set_xlabel("Density")
-    ax.grid(visible=True, which="major", axis="both")
-    ax.set_title(period)
-    plots.ax_risk_categories(ax, thresholds)
-
 def plot_compare_distribution_all(model, experiment, bins=None, cumulative=False, norm=False, **norm_kwargs):
     path_leaf = pathlib.Path(settings.site) / "indicators"
     thresholds = None
@@ -87,7 +87,7 @@ def plot_compare_distribution_all(model, experiment, bins=None, cumulative=False
     dir_cumulative = ""
     if cumulative:
         dir_cumulative = "cumulative"
-    dir_out = settings.dir_figures / path_leaf / "distribution" / dir_cumulative
+    dir_out = settings.dir_figures / path_leaf / experiment / "distribution" / dir_cumulative
     dir_out.mkdir(parents=True, exist_ok=True)
     fig.savefig(dir_out / f"{model}.pdf")
     
@@ -95,8 +95,7 @@ def plot_compare_distribution_all(model, experiment, bins=None, cumulative=False
     plt.close(fig)
 
 if __name__ == "__main__":
-    import tqdm
-    for m in tqdm.tqdm(thesis.models):
+    for m in thesis.models:
         for s in thesis.scenarios:
             plot_compare_distribution_all(m, s, bins=200, cumulative=False)
             plot_compare_distribution_all(m, s, bins=200, cumulative=True)
