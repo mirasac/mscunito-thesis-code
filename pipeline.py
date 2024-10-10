@@ -178,3 +178,77 @@ if __name__ == "__main__":
             for y in thesis.time_horizons.keys():
                 hazard = evaluate_hazard(m, s, y, dir_indicators)
                 evaluate_risk(m, s, y, exposure, hazard, vulnerability, dir_indicators)
+    
+    
+    
+    ######### Evaluate risk categories #########
+    
+    def get_risk_ensemble(experiment, period, dir_indicators):
+        problem = "heat_wave_max_length_thresh_tasmin"
+        list_ds = []
+        for m in thesis.models:
+            ds = xarray.load_dataset(dir_indicators / experiment / period / "risk" / f"{m}.nc", decode_timedelta=False)
+            end = ds.sizes[problem]
+            ds = ds.drop_vars(ds.coords.keys())
+            ds = ds.assign_coords(coords={problem: (problem, thesis.p3[:end])})
+            list_ds.append(ds)
+        dim_m = "model"
+        ds = xarray.concat(list_ds, dim=dim_m)
+        ds = ds.assign_coords({dim_m: (dim_m, list(thesis.models))})
+        return ds
+
+    def aggregate_risk_average(ds):
+        da = ds["risk"]
+        #quantiles = da.quantile([0.05, 0.2, 0.4, 0.5, 0.6, 0.8, 0.95], dim="model", method="linear", skipna=True),
+        return xarray.Dataset(data_vars={
+            "mean": da.mean(dim="model", skipna=True),
+            "std": da.std(dim="model", skipna=True, ddof=1),
+            "min": da.min(dim="model", skipna=True),
+            #"P05": quantiles.isel(quantile=0, drop=True),
+            #"P20": quantiles.isel(quantile=1, drop=True),
+            #"P40": quantiles.isel(quantile=2, drop=True),
+            #"P50": quantiles.isel(quantile=3, drop=True),
+            #"P60": quantiles.isel(quantile=4, drop=True),
+            #"P80": quantiles.isel(quantile=5, drop=True),
+            #"P95": quantiles.isel(quantile=6, drop=True),
+            "max": da.max(dim="model", skipna=True)
+        })
+    
+    def apply_risk_categories(da, thresholds):
+        """Apply risk categories as natural numbers from 1 to
+        len(thresholds) - 1 using the boundaries specified
+        in array `thresholds`. Values lower than the first value
+        and higher than the last value are assigned to the
+        lowest and highest risk categories, respectively.
+        """
+        cond = (da <= thresholds[0])
+        da = xarray.where(cond, 1, da, keep_attrs=True)
+        for i, _ in enumerate(thresholds[1:], start=1):
+            cond = ((da > thresholds[i - 1]) & (da <= thresholds[i]))
+            da = xarray.where(cond, i, da, keep_attrs=True)
+        cond = (da > thresholds[-1])
+        da = xarray.where(cond, len(thresholds) - 1, da, keep_attrs=True)
+        return da
+    
+    coords = {
+        "heat_wave_index_window": ("heat_wave_index_window", thesis.p1),
+        "heat_wave_index_thresh": ("heat_wave_index_thresh", thesis.p2),
+        "heat_wave_max_length_window": ("heat_wave_max_length_window", thesis.p1),
+        "heat_wave_max_length_thresh_tasmax": ("heat_wave_max_length_thresh_tasmax", thesis.p2),
+        "heat_wave_max_length_thresh_tasmin": ("heat_wave_max_length_thresh_tasmin", thesis.p3),
+        "max_n_day_precipitation_amount_window": ("max_n_day_precipitation_amount_window", thesis.p4),
+        "wetdays_thresh": ("wetdays_thresh", thesis.p5),
+        "cwd_thresh": ("cwd_thresh", thesis.p5)
+    }
+    
+    ds = aggregate_risk_average(get_risk_ensemble("historical", "reference", dir_indicators))
+    ds = ds.assign_coords(coords=coords)
+    thresholds = braun.utils.generic.get_risk_thresholds(ds["mean"].values.flatten(), n_categories=5)
+    ds = ds.assign({"category": apply_risk_categories(ds["mean"], thresholds)})
+    ds.to_netcdf(dir_indicators / "historical" / "reference" / "risk" / "risk.nc")
+    for s in thesis.scenarios:
+        for y in thesis.time_horizons.keys():
+            ds = aggregate_risk_average(get_risk_ensemble(s, y, dir_indicators))
+            ds = ds.assign_coords(coords=coords)
+            ds = ds.assign({"category": apply_risk_categories(ds["mean"], thresholds)})
+            ds.to_netcdf(dir_indicators / s / y / "risk" / "risk.nc")

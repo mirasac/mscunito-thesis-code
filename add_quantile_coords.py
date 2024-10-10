@@ -15,15 +15,12 @@ def label_quantiles(filename: pathlib.Path, indicator):
     _ds = None
     # TODO better do this in a programmatic way.
     if indicator in ("heat_wave_index",):
-        quantiles = [0.9, 0.97, 0.99, 0.999, 1.0]
-        _ds = ds.assign_coords({"thresh_q": ("thresh", quantiles)})
+        _ds = ds.assign_coords({"thresh_q": ("thresh", thesis.p2)})
     elif indicator in ("heat_wave_max_length",):
-        quantiles = [0.9, 0.97, 0.99, 0.999, 1.0]
-        _ds = ds.assign_coords({"thresh_tasmin_q": ("thresh_tasmin", quantiles)})
-        _ds = _ds.assign_coords({"thresh_tasmax_q": ("thresh_tasmax", quantiles)})
+        _ds = ds.assign_coords({"thresh_tasmin_q": ("thresh_tasmin",  thesis.p3)})
+        _ds = _ds.assign_coords({"thresh_tasmax_q": ("thresh_tasmax",  thesis.p2)})
     elif indicator in ("wetdays", "cwd"):
-        quantiles = [0.9, 0.97, 0.99, 0.999, 0.9999]
-        _ds = ds.assign_coords({"thresh_q": ("thresh", quantiles)})
+        _ds = ds.assign_coords({"thresh_q": ("thresh", thesis.p5)})
     if _ds is not None:
         _ds.to_netcdf(filename)
     else:

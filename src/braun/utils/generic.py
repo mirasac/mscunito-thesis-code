@@ -67,3 +67,24 @@ def set_quantile_dims(ds):
         if new_dim in ds.coords:
             dims_dict[k] = new_dim
     return ds.swap_dims(dims_dict=dims_dict)
+
+def standardize(array, mu=None, sigma=None):
+    if mu is None:
+        mu = array.mean()
+    if sigma is None:
+        sigma = array.std(ddof=1)
+    return (array - mu) / sigma
+
+def minmax(array, min_value=None, max_value=None):
+    if min_value is None:
+        min_value = array.min()
+    if max_value is None:
+        max_value = array.max()
+    return (array - min_value) / (max_value - min_value)
+
+def get_risk_thresholds(array, n_categories=5):
+    """Return an array with the boundaries of risk categories."""
+    thresholds = numpy.linspace(0.0, 1.0, num=n_categories + 1, endpoint=True)
+    #_return = da.quantile(thresholds).values
+    _return = array.min() + (array.max() - array.min()) * thresholds
+    return _return

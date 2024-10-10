@@ -9,5 +9,10 @@
   "ssp126": "#1F2E52",
   "ssp245": "#E78928",
   "ssp370": "#CB172F",
-  "ssp585": "#870A21"
+  "ssp585": "#870A21",
+  "very_low": "#00FF00",
+  "low": "#40BF00",
+  "intermediate": "#807F00",
+  "high": "#C03F00",
+  "very_high": "#FF0000"
 }

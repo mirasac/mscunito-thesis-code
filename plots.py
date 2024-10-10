@@ -19,6 +19,16 @@ EXTENT = (
     thesis.coords[settings.site][0] + _half_width
 )
 
+# TODO instead of using this dictionary, load the palette from
+# palette.json at startup using the settings for the file path.
+PALETTE = {
+    "very_low": "#00FF00",
+    "low": "#40BF00",
+    "intermediate": "#807F00",
+    "high": "#C03F00",
+    "very_high": "#FF0000"
+}
+
 CACHE_SHAPEFILES = {}
 
 # Set up default directory for generated figures.
@@ -105,15 +115,6 @@ def is_available_period(experiment, period):
     elif experiment in thesis.scenarios:
         if period in thesis.time_horizons.keys():
             _return = True
-    return _return
-
-def get_risk_thresholds(model, dir_data, n_pieces=5):
-    filename = dir_data / "historical" / "reference" / "risk" / f"{model}.nc"
-    ds = xarray.load_dataset(filename, decode_timedelta=False)
-    da = ds["risk"]
-    thresholds = numpy.linspace(0.0, 1.0, num=n_pieces + 1, endpoint=True)
-    #_return = da.quantile(thresholds).values
-    _return = da.min().values + (da.max().values - da.min().values) * thresholds
     return _return
 
 
@@ -307,3 +308,33 @@ def plot_norm_sided(model, indicator, experiment, period):
     axes = fig.subplots(nrows=1, ncols=2, sharex=True, sharey=True, squeeze=False)
     axes[0][0].plot(x, ds[indicator].values, color="black", marker='.', linestyle="dotted")
     axes[0][1].plot(x, ds_norm[indicator].values, color="black", marker='.', linestyle="dotted")
+
+def ax_risk_categories(ax, thresholds):
+    """Fill background with colors of risk categories,
+    boundaries on y axis are given by values in `thresholds`.
+    """
+    colors = tuple(PALETTE.values())
+    categories = tuple(PALETTE.keys())
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    ax.fill_between(xlim, thresholds[0], y2=ylim[0], edgecolor=None, facecolor=colors[0], alpha=0.8, zorder=0.1)
+    for i, y1 in enumerate(thresholds[1:], start=1):
+        ax.fill_between(
+            xlim,
+            y1,
+            y2=thresholds[i - 1],
+            edgecolor=None,
+            facecolor=colors[i - 1],
+            alpha=0.8,
+            zorder=0.1,
+            label=categories[i - 1].replace('_', ' ').capitalize()
+        )
+    ax.fill_between(
+        xlim,
+        ylim[1],
+        y2=thresholds[-1],
+        edgecolor=None,
+        facecolor=colors[-1],
+        alpha=0.8,
+        zorder=0.1
+    )

@@ -136,7 +136,6 @@ def prepare_combinations(dim: dict, combinations: dict, units: dict):
                 combinations_formatted[i].append(c)
         combinations_reduced[i] = numpy.delete(combinations[i], obj_delete, axis=0)
     return combinations_reduced, combinations_formatted
-        
 
 def compute(indicator, parameters: dict, values: dict, **kwargs):
     _da = indicator(**parameters, **kwargs)

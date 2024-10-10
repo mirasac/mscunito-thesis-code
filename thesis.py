@@ -86,3 +86,10 @@ INDICATORS_INTEGER = (
 
 # TODO better implement the load of these at import of module `braun`.
 INDICATORS_INVALID = ("heat_wave_max_length",)
+
+# TODO better implement the load of these at import of module `braun`.
+p1 = list(range(1, 32, 3))
+p2 = [0.9, 0.97, 0.99, 0.999, 1.0]
+p3 = [0.9, 0.97, 0.99, 0.999, 1.0]
+p4 = list(range(1, 32, 1))
+p5 = [0.9, 0.97, 0.99, 0.999, 0.9999]
