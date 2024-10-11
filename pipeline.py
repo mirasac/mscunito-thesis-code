@@ -199,6 +199,8 @@ if __name__ == "__main__":
 
     def aggregate_risk_average(ds):
         da = ds["risk"]
+        # TODO note that not only the quantiles are very slow to compute,
+        # but it seems that the other dimensions are not kept.
         #quantiles = da.quantile([0.05, 0.2, 0.4, 0.5, 0.6, 0.8, 0.95], dim="model", method="linear", skipna=True),
         return xarray.Dataset(data_vars={
             "mean": da.mean(dim="model", skipna=True),
@@ -230,25 +232,16 @@ if __name__ == "__main__":
         da = xarray.where(cond, len(thresholds) - 1, da, keep_attrs=True)
         return da
     
-    coords = {
-        "heat_wave_index_window": ("heat_wave_index_window", thesis.p1),
-        "heat_wave_index_thresh": ("heat_wave_index_thresh", thesis.p2),
-        "heat_wave_max_length_window": ("heat_wave_max_length_window", thesis.p1),
-        "heat_wave_max_length_thresh_tasmax": ("heat_wave_max_length_thresh_tasmax", thesis.p2),
-        "heat_wave_max_length_thresh_tasmin": ("heat_wave_max_length_thresh_tasmin", thesis.p3),
-        "max_n_day_precipitation_amount_window": ("max_n_day_precipitation_amount_window", thesis.p4),
-        "wetdays_thresh": ("wetdays_thresh", thesis.p5),
-        "cwd_thresh": ("cwd_thresh", thesis.p5)
-    }
+    coords = {k: (k, v) for k, v in thesis.PARAMETERS.items()}
     
     ds = aggregate_risk_average(get_risk_ensemble("historical", "reference", dir_indicators))
     ds = ds.assign_coords(coords=coords)
-    thresholds = braun.utils.generic.get_risk_thresholds(ds["mean"].values.flatten(), n_categories=5)
+    thresholds = braun.utils.generic.get_risk_thresholds(ds["mean"].values.flatten(), n_categories=len(thesis.risk_categories))
     ds = ds.assign({"category": apply_risk_categories(ds["mean"], thresholds)})
-    ds.to_netcdf(dir_indicators / "historical" / "reference" / "risk" / "risk.nc")
+    ds.to_netcdf(dir_indicators / "historical" / "reference" / "risk" / "ensemble.nc")
     for s in thesis.scenarios:
         for y in thesis.time_horizons.keys():
             ds = aggregate_risk_average(get_risk_ensemble(s, y, dir_indicators))
             ds = ds.assign_coords(coords=coords)
             ds = ds.assign({"category": apply_risk_categories(ds["mean"], thresholds)})
-            ds.to_netcdf(dir_indicators / s / y / "risk" / "risk.nc")
+            ds.to_netcdf(dir_indicators / s / y / "risk" / "ensemble.nc")

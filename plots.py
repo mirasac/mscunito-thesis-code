@@ -313,11 +313,21 @@ def ax_risk_categories(ax, thresholds):
     """Fill background with colors of risk categories,
     boundaries on y axis are given by values in `thresholds`.
     """
+    # TODO use palette only for colors and refer to dict of risk values in thesis settings.
     colors = tuple(PALETTE.values())
     categories = tuple(PALETTE.keys())
+    alpha = 0.66
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
-    ax.fill_between(xlim, thresholds[0], y2=ylim[0], edgecolor=None, facecolor=colors[0], alpha=0.8, zorder=0.1)
+    ax.fill_between(
+        xlim,
+        max(thresholds[0], ylim[0]),
+        y2=min(thresholds[0], ylim[0]),
+        edgecolor=None,
+        facecolor=colors[0],
+        alpha=alpha,
+        zorder=0.1
+    )
     for i, y1 in enumerate(thresholds[1:], start=1):
         ax.fill_between(
             xlim,
@@ -325,16 +335,16 @@ def ax_risk_categories(ax, thresholds):
             y2=thresholds[i - 1],
             edgecolor=None,
             facecolor=colors[i - 1],
-            alpha=0.8,
+            alpha=alpha,
             zorder=0.1,
             label=categories[i - 1].replace('_', ' ').capitalize()
         )
     ax.fill_between(
         xlim,
-        ylim[1],
-        y2=thresholds[-1],
+        max(thresholds[-1], ylim[1]),
+        y2=min(thresholds[-1], ylim[1]),
         edgecolor=None,
         facecolor=colors[-1],
-        alpha=0.8,
+        alpha=alpha,
         zorder=0.1
     )

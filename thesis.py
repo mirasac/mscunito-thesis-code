@@ -93,3 +93,23 @@ p2 = [0.9, 0.97, 0.99, 0.999, 1.0]
 p3 = [0.9, 0.97, 0.99, 0.999, 1.0]
 p4 = list(range(1, 32, 1))
 p5 = [0.9, 0.97, 0.99, 0.999, 0.9999]
+
+# TODO better implement the load of these at import of module `braun`.
+PARAMETERS = {
+    "heat_wave_index_window": p1,
+    "heat_wave_index_thresh": p2,
+    "heat_wave_max_length_window": p1,
+    "heat_wave_max_length_thresh_tasmax": p2,
+    "heat_wave_max_length_thresh_tasmin": p3,
+    "max_n_day_precipitation_amount_window": p4,
+    "wetdays_thresh": p5,
+    "cwd_thresh": p5
+}
+
+risk_categories = {
+    "very_low": "Very low",
+    "low": "Low",
+    "intermediate": "Intermediate",
+    "high": "High",
+    "very_high": "Very high"
+}

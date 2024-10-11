@@ -30,7 +30,7 @@ def plot_compare_distribution(model, experiment, period, bins=None, cumulative=F
     path_leaf = pathlib.Path(settings.site) / "indicators" / experiment / period / "risk"
     thresholds = None
     with xarray.open_dataset(settings.dir_data / settings.site / "indicators" / "historical" / "reference" / "risk" / f"{model}.nc", decode_timedelta=False) as ds_ref:
-        thresholds = braun.utils.generic.get_risk_thresholds(ds_ref["risk"].values.flatten(), n_categories=5)
+        thresholds = braun.utils.generic.get_risk_thresholds(ds_ref["risk"].values.flatten(), n_categories=len(thesis.risk_categories))
     
     fig = plt.figure(num=1, figsize=plots.FIGSIZE, clear=True, layout="constrained")
     axes = fig.subplots(nrows=1, ncols=2, sharex=True, sharey=True, squeeze=False)
@@ -63,7 +63,7 @@ def plot_compare_distribution_all(model, experiment, bins=None, cumulative=False
     path_leaf = pathlib.Path(settings.site) / "indicators"
     thresholds = None
     with xarray.open_dataset(settings.dir_data / path_leaf / "historical" / "reference" / "risk" / f"{model}.nc", decode_timedelta=False) as ds_ref:
-        thresholds = braun.utils.generic.get_risk_thresholds(ds_ref["risk"].values.flatten(), n_categories=5)
+        thresholds = braun.utils.generic.get_risk_thresholds(ds_ref["risk"].values.flatten(), n_categories=len(thesis.risk_categories))
     
     fig = plt.figure(num=1, figsize=plots.FIGSIZE, clear=True, layout="constrained")
     axes = fig.subplots(nrows=1, ncols=4, sharex=True, sharey=True, squeeze=False)
@@ -87,7 +87,7 @@ def plot_compare_distribution_all(model, experiment, bins=None, cumulative=False
     dir_cumulative = ""
     if cumulative:
         dir_cumulative = "cumulative"
-    dir_out = settings.dir_figures / path_leaf / experiment / "distribution" / dir_cumulative
+    dir_out = settings.dir_figures / path_leaf / experiment / "risk" / "distribution" / dir_cumulative
     dir_out.mkdir(parents=True, exist_ok=True)
     fig.savefig(dir_out / f"{model}.pdf")
     
