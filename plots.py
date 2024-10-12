@@ -235,12 +235,18 @@ def add_background(ax=None):
     Image.MAX_IMAGE_PIXELS = max_image_pixels_tmp
     return ax
 
-def add_borders(ax=None):    
+def add_regions(ax=None):
     if ax is None:
         ax = plt.gca()
     filename_regions = settings.dir_data / "maps" / "gadm41_ITA" / "gadm41_ITA_1.shp"
     shapes = cache_shapefile(str(filename_regions.resolve()))
     ax.add_geometries(shapes, cartopy.crs.PlateCarree(), edgecolor=("black", 1.0), facecolor=("grey", 0.0), linestyle="dotted")
+    return ax
+
+def add_borders(ax=None):    
+    if ax is None:
+        ax = plt.gca()
+    add_regions(ax)
     filename_borders = settings.dir_data / "maps" / "gadm41_ITA" / "gadm41_ITA_0.shp"
     shapes = cache_shapefile(str(filename_borders.resolve()))
     ax.add_geometries(shapes, cartopy.crs.PlateCarree(), edgecolor=("black", 1.0), facecolor=("grey", 0.0), linestyle="solid")
@@ -257,17 +263,19 @@ def set_map(ax=None, extent=None, crs=None):
     add_borders(ax=ax)
     return ax
 
-def plot_site(x_site, y_site, ax=None, label=None):
+def plot_site(x_site, y_site, ax=None, label=None, plot_kwargs={}, text_kwargs={}):
     if ax is None:
         ax = plt.gca()
     markersize = 5
+    color = plot_kwargs.pop("color", "black")
     ax.plot(
         x_site,
         y_site,
         marker='.',
-        color="black",
+        color=color,
         markersize=markersize,
-        alpha=1
+        alpha=1,
+        **plot_kwargs
     )
     if label is not None:
         geodetic_transform = cartopy.crs.Geodetic()._as_mpl_transform(ax)
@@ -277,7 +285,8 @@ def plot_site(x_site, y_site, ax=None, label=None):
             label,
             verticalalignment="top",
             horizontalalignment="center",
-            transform=trn.offset_copy(geodetic_transform, units="dots", y=-1.5 * markersize)
+            transform=trn.offset_copy(geodetic_transform, units="dots", y=-1.5 * markersize),
+            **text_kwargs
         )
     return ax
 

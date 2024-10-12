@@ -88,3 +88,19 @@ def get_risk_thresholds(array, n_categories=5):
     #_return = da.quantile(thresholds).values
     _return = array.min() + (array.max() - array.min()) * thresholds
     return _return
+
+def get_bbox(latitude, longitude, half_width=0.5):
+    """Return the square bounding box of edge size `half_width` in
+    decimal degrees centered in the coordinates specified by iterator
+    `center`, which have first element latitude in decimal degrees North
+    and second longitude in decimal degrees East.
+    No conversion around the date line crossing is made.
+    
+    The return value is a tuple (lon_min, lon_max, lat_min, lat_max).
+    """
+    return (
+        longitude - half_width,
+        longitude + half_width,
+        latitude - half_width,
+        latitude + half_width
+    )
