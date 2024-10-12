@@ -316,6 +316,7 @@ def ax_risk_categories(ax, thresholds):
     # TODO use palette only for colors and refer to dict of risk values in thesis settings.
     colors = tuple(PALETTE.values())
     categories = tuple(PALETTE.keys())
+    hatch = 'x'
     alpha = 0.66
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
@@ -323,8 +324,9 @@ def ax_risk_categories(ax, thresholds):
         xlim,
         max(thresholds[0], ylim[0]),
         y2=min(thresholds[0], ylim[0]),
-        edgecolor=None,
-        facecolor=colors[0],
+        edgecolor=colors[0],
+        facecolor="white",
+        hatch=hatch,
         alpha=alpha,
         zorder=0.1
     )
@@ -333,8 +335,9 @@ def ax_risk_categories(ax, thresholds):
             xlim,
             y1,
             y2=thresholds[i - 1],
-            edgecolor=None,
-            facecolor=colors[i - 1],
+            edgecolor=colors[i - 1],
+            facecolor="white",
+            hatch=i * hatch,
             alpha=alpha,
             zorder=0.1,
             label=categories[i - 1].replace('_', ' ').capitalize()
@@ -343,8 +346,9 @@ def ax_risk_categories(ax, thresholds):
         xlim,
         max(thresholds[-1], ylim[1]),
         y2=min(thresholds[-1], ylim[1]),
-        edgecolor=None,
-        facecolor=colors[-1],
+        edgecolor=colors[-1],
+        facecolor="white",
+        hatch=len(thresholds) * hatch,
         alpha=alpha,
         zorder=0.1
     )
