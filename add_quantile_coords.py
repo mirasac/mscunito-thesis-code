@@ -13,7 +13,7 @@ def label_quantiles(filename: pathlib.Path, indicator):
     # Open function from xarray guarantees round trip even if naturals are loaded as timedelta.
     ds = xarray.load_dataset(filename_bak)
     _ds = None
-    # TODO better do this in a programmatic way.
+    # TODO better do this in a programmatic way, see thesis.PARAMETERS.
     if indicator in ("heat_wave_index",):
         _ds = ds.assign_coords({"thresh_q": ("thresh", thesis.p2)})
     elif indicator in ("heat_wave_max_length",):

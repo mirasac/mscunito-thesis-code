@@ -94,16 +94,38 @@ p3 = [0.9, 0.97, 0.99, 0.999, 1.0]
 p4 = list(range(1, 32, 1))
 p5 = [0.9, 0.97, 0.99, 0.999, 0.9999]
 
-# TODO better implement the load of these at import of module `braun`.
+# TODO better implement a sort of in-memory database to map indicators to
+# parameters and viceversa, available at startup and loaded from settings
+# (this was the initial idea of module braun.packages.xclim using
+# information from xclim.Indicator objects, but the time started to run short).
 PARAMETERS = {
-    "heat_wave_index_window": p1,
-    "heat_wave_index_thresh": p2,
-    "heat_wave_max_length_window": p1,
-    "heat_wave_max_length_thresh_tasmax": p2,
-    "heat_wave_max_length_thresh_tasmin": p3,
-    "max_n_day_precipitation_amount_window": p4,
-    "wetdays_thresh": p5,
-    "cwd_thresh": p5
+    "heat_wave_index": {
+        "window": p1,
+        "thresh": p2
+    },
+    "heat_wave_max_length": {
+        "window": p1,
+        "thresh_tasmax": p2,
+        "thresh_tasmin": p3
+    },
+    "max_n_day_precipitation_amount": {
+        "window": p4
+    },
+    "wetdays": {
+        "thresh": p5
+    },
+    "cwd": {
+        "thresh": p5
+    }
+}
+
+# TODO better implement these as additional information in the
+# in-memory database of the comment above for PARAMETERS.
+PARAMETERS_QUANTILE = {
+    "heat_wave_index": ("thresh",),
+    "heat_wave_max_length": ("thresh_tasmax", "thresh_tasmin"),
+    "wetdays": ("thresh",),
+    "cwd": ("thresh",)
 }
 
 risk_categories = {

@@ -188,7 +188,7 @@ if __name__ == "__main__":
         list_ds = []
         for m in thesis.models:
             ds = xarray.load_dataset(dir_indicators / experiment / period / "risk" / f"{m}.nc", decode_timedelta=False)
-            end = ds.sizes[problem]
+            end = ds.sizes[problem]  # Cheat: it is known that the NaNs are at the end of the array.
             ds = ds.drop_vars(ds.coords.keys())
             ds = ds.assign_coords(coords={problem: (problem, thesis.p3[:end])})
             list_ds.append(ds)
@@ -232,7 +232,7 @@ if __name__ == "__main__":
         da = xarray.where(cond, len(thresholds) - 1, da, keep_attrs=True)
         return da
     
-    coords = {k: (k, v) for k, v in thesis.PARAMETERS.items()}
+    coords = {f"{i}_{p}": (f"{i}_{p}", values) for i, parameters in thesis.PARAMETERS.items() for p, values in parameters.items()}
     
     ds = aggregate_risk_average(get_risk_ensemble("historical", "reference", dir_indicators))
     ds = ds.assign_coords(coords=coords)

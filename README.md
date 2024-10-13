@@ -46,6 +46,10 @@ Notebooks in the main directory show the steps for the analysis. They should be 
 
 Note that steps following step 3 do not depend on it: climatology is needed to evaluate normals and anomalies of climate variables, but analyses on indicators are performed on model data.
 
+Additional files which can be useful for the analysis after the evaluation of risk are:
+
+- `parameters_values.ipynb` which retrieve some statistics on parameters values.
+
 ## Color palette
 
 File `palette.json` stores colors used in the thesis document and in some plots.
