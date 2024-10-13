@@ -4,6 +4,13 @@ data/torino/*
 !data/torino/indicators
 data/torino/indicators/*
 !data/torino/indicators/*.csv
+!data/torino/indicators/historical
+data/torino/indicators/historical/*
+!data/torino/indicators/historical/reference
+data/torino/indicators/historical/reference/*
+!data/torino/indicators/historical/reference/parameters
+data/torino/indicators/historical/reference/parameters/*
+!data/torino/indicators/historical/reference/parameters/*.csv
 data/ciampino/*
 !data/ciampino/indicators
 data/ciampino/indicators/*
