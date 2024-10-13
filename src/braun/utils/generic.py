@@ -1,3 +1,5 @@
+import math
+
 import numpy
 import xarray
 
@@ -104,3 +106,11 @@ def get_bbox(latitude, longitude, half_width=0.5):
         latitude - half_width,
         latitude + half_width
     )
+
+def round_to_ref(x, ref):
+    """Round `x` to match the least significant digit of `ref` in base 10."""
+    if ref == 0:
+        n = 0
+    else:
+        n = -int(math.floor(math.log10(abs(ref))))
+    return round(x, n)
