@@ -14,7 +14,7 @@ def plot_site_map():
     ax = fig.add_subplot(projection=projection)
     
     extent_IT = (6, 19, 36, 48)  # Include Italy's borders.
-    _half_width = 7.0
+    _half_width = 2.0
     extent = (
         thesis.coords[settings.site][1] - _half_width,
         thesis.coords[settings.site][1] + _half_width,
