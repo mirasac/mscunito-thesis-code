@@ -8,15 +8,18 @@ import plots
 import settings
 import thesis
 
-def plot_field_anomaly(model, indicator, scenario):
+def plot_field_anomaly(model, indicator, scenario, cbar_label=None):
+    k = f"{model}_{indicator}"
     list_ds = []
     for y in thesis.time_horizons.keys():
-        filename_ref = settings.dir_data / settings.site / "indicators" / "historical" / "reference" / "field" / f"{model}_{indicator}.nc"
+        filename_ref = settings.dir_data / settings.site / "indicators" / "historical" / "reference" / "field" / f"{k}.nc"
         path_leaf = pathlib.Path(settings.site) / "indicators" / scenario / y / "field"
-        filename = settings.dir_data / path_leaf / f"{model}_{indicator}.nc"
+        filename = settings.dir_data / path_leaf / f"{k}.nc"
         ds_ref = xarray.load_dataset(filename_ref, decode_timedelta=False)
         ds = xarray.load_dataset(filename, decode_timedelta=False)
         list_ds.append(ds - ds_ref)
+    if cbar_label is None:
+        cbar_label = f"{indicator} / {ds[indicator].attrs['units']}"
     _ds = xarray.concat(list_ds, dim='s')
     parameters = list(_ds.sizes.keys())
     parameters.remove("latitude")
@@ -37,7 +40,7 @@ def plot_field_anomaly(model, indicator, scenario):
         subplot_kws={"projection": projection},
         robust=True,
         alpha=0.5,
-        cbar_kwargs={"label": f"{indicator} / {ds[indicator].attrs['units']}", "pad": 0.05, "shrink": 0.8}
+        cbar_kwargs={"label": cbar_label, "pad": 0.05, "shrink": 0.8}
     )
     fig = fg.fig
     
@@ -65,13 +68,16 @@ def plot_field_anomaly(model, indicator, scenario):
     fig.subplots_adjust(right=0.8, left=0.1, wspace=0.1)  # Put last before rendering.
     
     # Show interactive plot.
-    plt.show()
-    plt.close(fig)
+    #plt.show()
     
     # Save plot to file.
-    dir_out = settings.dir_figures / path_leaf.parent.parent / "spatial_bias"
+    dir_out = settings.dir_figures / path_leaf.parent.parent / "spatial_bias" / k
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / f"{model}_{indicator}.pdf")
+    fig.savefig(dir_out / f"{i_combination}.pdf")
+    
+    # Be sure to free memory.
+    fig.clear()
+    plt.close(fig)
 
 if __name__ == "__main__":
     for i in thesis.INDICATORS:

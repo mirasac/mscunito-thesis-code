@@ -8,11 +8,13 @@ import plots
 import settings
 import thesis
 
-def plot_field_sided(model, indicator, experiment, period):
+def plot_field_sided(model, indicator, experiment, period, cbar_label=None):
     path_leaf = pathlib.Path(settings.site) / "indicators" / experiment / period / "field"
     filename = settings.dir_data / path_leaf / f"{model}_{indicator}.nc"
     filename_std = filename.parent / "std" / filename.name
     ds = xarray.load_dataset(filename, decode_timedelta=False)
+    if cbar_label is None:
+        cbar_label = f"{indicator} / {ds[indicator].attrs['units']}"
     ds_std = xarray.load_dataset(filename_std, decode_timedelta=False)
     #_ds = ds.assign({f"{indicator}_std": ds_std[indicator]})  # Alternative way to manage data.
     _ds = xarray.concat([ds, ds_std], dim='a')
@@ -35,7 +37,7 @@ def plot_field_sided(model, indicator, experiment, period):
             subplot_kws={"projection": projection},
             robust=True,
             alpha=0.5,
-            cbar_kwargs={"label": f"{indicator} / {ds[indicator].attrs['units']}", "pad": 0.05, "shrink": 0.8}
+            cbar_kwargs={"label": cbar_label, "pad": 0.05, "shrink": 0.8}
         )
         fig = fg.fig
         
