@@ -357,7 +357,7 @@ def ax_risk_categories(ax, thresholds):
         y2=min(thresholds[-1], ylim[1]),
         edgecolor=colors[-1],
         facecolor="white",
-        hatch=len(thresholds) * hatch,
+        hatch=(len(thresholds) - 1) * hatch,
         alpha=alpha,
         zorder=0.1
     )
