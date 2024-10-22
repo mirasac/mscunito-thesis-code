@@ -182,7 +182,9 @@ def plot_window(scenario, period, xlabel="", ylabel="", indexers=None, norm=None
     # Save plot to file.
     dir_out = settings.dir_figures / path_leaf / scenario / "risk"
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / f"window_{period}.pdf")
+    f = f"window_{period}"
+    fig.savefig(dir_out / f"{f}.pdf")
+    fig.savefig(dir_out / f"{f}.png", transparent=False, dpi=300.0)
     
     # Be sure to free memory.
     fig.clear()

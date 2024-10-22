@@ -36,9 +36,31 @@ def plot_site_map():
     ax.gridlines(
         crs=crs,
         draw_labels={"bottom": "x", "left": "y"},
+        dms=False,
+        formatter_kwargs={"number_format": "#.1f"},
         color="grey",
         alpha=0.5,
         linestyle="dashed"
+    )
+    ax.text(
+        -0.2,
+        0.5,
+        "latitude",
+        transform=ax.transAxes,
+        horizontalalignment="center",
+        rotation="vertical",
+        rotation_mode="anchor",
+        verticalalignment="bottom"
+    )
+    ax.text(
+        0.5,
+        -0.075,
+        "longitude",
+        transform=ax.transAxes,
+        horizontalalignment="center",
+        rotation="horizontal",
+        rotation_mode="anchor",
+        verticalalignment="top"
     )
     
     # Interactive blocking plot.
@@ -47,7 +69,9 @@ def plot_site_map():
     # Save plot to file.
     dir_out = settings.dir_figures
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / "site_country.pdf")
+    f = "site_country"
+    fig.savefig(dir_out / f"{f}.pdf")
+    fig.savefig(dir_out / f"{f}.png", transparent=False, dpi=300.0)
     
     # Clear memory.
     fig.clear()

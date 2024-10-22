@@ -285,7 +285,7 @@ def plot_site(x_site, y_site, ax=None, label=None, plot_kwargs={}, text_kwargs={
             label,
             verticalalignment="top",
             horizontalalignment="center",
-            transform=trn.offset_copy(geodetic_transform, units="dots", y=-1.5 * markersize),
+            transform=trn.offset_copy(geodetic_transform, units="dots", y=-5.0 * markersize),
             **text_kwargs
         )
     return ax

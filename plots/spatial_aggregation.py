@@ -43,7 +43,9 @@ def plot_EOF_explained(model, experiment, period):
     # Save plot to file.
     dir_out = settings.dir_figures / settings.site / "indicators" / experiment / period / "hazard" / "explained"
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / f"{model}.pdf")
+    f = model
+    fig.savefig(dir_out / f"{f}.pdf")
+    fig.savefig(dir_out / f"{f}.png", transparent=False, dpi=300.0)
     
     # Clear memory.
     fig.clear()

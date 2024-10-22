@@ -36,7 +36,10 @@ def plot_risk_errorbar(experiment, period):
     fig.clear()
     plt.close(fig)
 
-def ax_1_parameter(ax, scenario, period, parameter, indexers=None, norm=None, **norm_kwargs):
+# TODO this function is very similar to ax_parameter_same,
+# they could be one working only on argument `parameter`,
+# which if it is a list, the function works as ax_parameter_same.
+def ax_parameter(ax, scenario, period, parameter, indexers=None, norm=None, **norm_kwargs):
     """Data are restricted to a 1D array with coordinates specified by
     dict `indexers`. By default all coordinates are set to the median index,
     rounded down in case of dimension of even size, except for the coordinate
@@ -71,7 +74,7 @@ def ax_1_parameter(ax, scenario, period, parameter, indexers=None, norm=None, **
     ax.grid(visible=True, which="major", axis="both")
     ax.set_title(period)
 
-def plot_1_parameter_all(scenario, parameter, xlabel="", indexers=None, norm=None):
+def plot_parameter_all(scenario, parameter, xlabel="", indexers=None, norm=None):
     path_leaf = pathlib.Path(settings.site) / "indicators"
     thresholds = None
     norm_kwargs = {}
@@ -91,7 +94,7 @@ def plot_1_parameter_all(scenario, parameter, xlabel="", indexers=None, norm=Non
     axes = fig.subplots(nrows=1, ncols=3, sharex=True, sharey=True, squeeze=False)
     
     for y, ax in zip(thesis.time_horizons.keys(), axes[0]):
-        ax_1_parameter(ax, scenario, y, parameter, indexers=indexers, norm=norm, **norm_kwargs)
+        ax_parameter(ax, scenario, y, parameter, indexers=indexers, norm=norm, **norm_kwargs)
         ax.set_xlabel(xlabel)
     
     ylabel = "Risk value"
@@ -110,13 +113,15 @@ def plot_1_parameter_all(scenario, parameter, xlabel="", indexers=None, norm=Non
     # Save plot to file.
     dir_out = settings.dir_figures / path_leaf / scenario / "risk"
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / f"{parameter}.pdf")
+    f = parameter
+    fig.savefig(dir_out / f"{f}.pdf")
+    fig.savefig(dir_out / f"{f}.png", transparent=False, dpi=300.0)
     
     # Be sure to free memory.
     fig.clear()
     plt.close(fig)
 
-def ax_2_parameter_same(ax, scenario, period, dimensions, indexers=None, norm=None, **norm_kwargs):
+def ax_parameter_same(ax, scenario, period, dimensions, indexers=None, norm=None, **norm_kwargs):
     """Plot data having same coordinates for the two values in `dimensions`.
     Other coordinates are restricted with the indices specified in `indexers`,
     by default they are set to the median index or the lowest of the
@@ -164,7 +169,7 @@ def ax_2_parameter_same(ax, scenario, period, dimensions, indexers=None, norm=No
     ax.grid(visible=True, which="major", axis="both")
     ax.set_title(period)
 
-def plot_2_parameter_same_all(scenario, dimensions, xlabel="", indexers=None, norm=None):
+def plot_parameter_same_all(scenario, dimensions, xlabel="", indexers=None, norm=None):
     path_leaf = pathlib.Path(settings.site) / "indicators"
     thresholds = None
     norm_kwargs = {}
@@ -184,7 +189,7 @@ def plot_2_parameter_same_all(scenario, dimensions, xlabel="", indexers=None, no
     axes = fig.subplots(nrows=1, ncols=3, sharex=True, sharey=True, squeeze=False)
     
     for y, ax in zip(thesis.time_horizons.keys(), axes[0]):
-        ax_2_parameter_same(ax, scenario, y, dimensions, indexers=indexers, norm=norm, **norm_kwargs)
+        ax_parameter_same(ax, scenario, y, dimensions, indexers=indexers, norm=norm, **norm_kwargs)
         ax.set_xlabel(xlabel)
     
     ylabel = "Risk value"
@@ -203,7 +208,9 @@ def plot_2_parameter_same_all(scenario, dimensions, xlabel="", indexers=None, no
     # Save plot to file.
     dir_out = settings.dir_figures / path_leaf / scenario / "risk"
     dir_out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(dir_out / f"{'-'.join(dimensions)}.pdf")
+    f = '-'.join(dimensions)
+    fig.savefig(dir_out / f"{f}.pdf")
+    fig.savefig(dir_out / f"{f}.png", transparent=False, dpi=300.0)
     
     # Be sure to free memory.
     fig.clear()
@@ -211,23 +218,23 @@ def plot_2_parameter_same_all(scenario, dimensions, xlabel="", indexers=None, no
 
 def plot1(indexers=None):
     for s in thesis.scenarios:
-        plot_1_parameter_all(s, "heat_wave_max_length_window", xlabel="p1 / day", indexers=indexers, norm="minmax")
-        plot_1_parameter_all(s, "heat_wave_max_length_thresh_tasmax", xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
-        plot_1_parameter_all(s, "heat_wave_max_length_thresh_tasmin", xlabel="p3 (quantile order)", indexers=indexers, norm="minmax")
+        plot_parameter_all(s, "heat_wave_max_length_window", xlabel="p1 / day", indexers=indexers, norm="minmax")
+        plot_parameter_all(s, "heat_wave_max_length_thresh_tasmax", xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
+        plot_parameter_all(s, "heat_wave_max_length_thresh_tasmin", xlabel="p3 (quantile order)", indexers=indexers, norm="minmax")
 
 def plot2(indexers=None):
     for s in thesis.scenarios:
-        plot_2_parameter_same_all(s, ["wetdays_thresh", "cwd_thresh"], xlabel="p5 (quantile order)", indexers=indexers, norm="minmax")
-        plot_2_parameter_same_all(s, ["heat_wave_index_thresh", "heat_wave_max_length_thresh_tasmax"], xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
-        plot_2_parameter_same_all(s, ["heat_wave_index_window", "heat_wave_max_length_window"], xlabel="p1 / day", indexers=indexers, norm="minmax")
+        plot_parameter_same_all(s, ["wetdays_thresh", "cwd_thresh"], xlabel="p5 (quantile order)", indexers=indexers, norm="minmax")
+        plot_parameter_same_all(s, ["heat_wave_index_thresh", "heat_wave_max_length_thresh_tasmax"], xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
+        plot_parameter_same_all(s, ["heat_wave_index_window", "heat_wave_max_length_window"], xlabel="p1 / day", indexers=indexers, norm="minmax")
 
 def plot3(indexers=None):
     for s in thesis.scenarios:
-        plot_1_parameter_all(s, "max_n_day_precipitation_amount_window", xlabel="p4 / day", indexers=indexers, norm="minmax")
+        plot_parameter_all(s, "max_n_day_precipitation_amount_window", xlabel="p4 / day", indexers=indexers, norm="minmax")
 
 def plot4(indexers=None):
     for s in thesis.scenarios:
-        plot_1_parameter_all(s, "heat_wave_index_thresh", xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
+        plot_parameter_all(s, "heat_wave_index_thresh", xlabel="p2 (quantile order)", indexers=indexers, norm="minmax")
 
 if __name__ == "__main__":
     indexers = {
