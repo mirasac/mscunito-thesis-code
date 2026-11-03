@@ -25,4 +25,4 @@ dynamic = ["version", "dependencies"]
 
 [tool.setuptools.dynamic]
 version = {file = ["VERSION"]}
-readme = {file = ["requirements.txt"], content-type = "text/markdown"}
+dependencies = {file = ["requirements.txt"]}
